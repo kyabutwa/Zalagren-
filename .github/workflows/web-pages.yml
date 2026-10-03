@@ -11,14 +11,15 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: zalagren-web-platform
   cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
-      name: github-pages
+      name: zalagren-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
