@@ -883,7 +883,7 @@ If ambiguity could cause a consequential action, Zalagren must require clarifica
 
 ## 37. Canonical Multi-Role Example
 
-A person lives in Apartment 42, owns another property, works for a provider, and is visiting another community.
+A person lives in Unit 42, owns another property, works for a provider, and is visiting another community.
 
 Represent:
 
@@ -905,7 +905,7 @@ There are not four accounts.
 
 A resident reports a water issue:
 
-> Participant → Relationship → Apartment → Context → Intent → ServiceRequest → Proposal → Authorization → WorkOrder → Worker Action → Event → Evidence → Resolution
+> Participant → Relationship → Unit → Context → Intent → ServiceRequest → Proposal → Authorization → WorkOrder → Worker Action → Event → Evidence → Resolution
 
 GENESIS may detect repeated incidents and propose a strategy.
 
