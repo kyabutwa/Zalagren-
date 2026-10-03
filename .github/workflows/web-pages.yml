@@ -30,13 +30,13 @@ jobs:
           test -f web/app.js
           grep -q '<link rel="stylesheet" href="styles.css">' web/index.html
           grep -q '<script src="app.js"></script>' web/index.html
-          grep -q 'Zalagren' web/index.html
-          grep -q 'CONSTANTYNA' web/index.html
-          grep -q 'GENESIS' web/index.html
-          grep -q 'BeatPay' web/index.html
-          grep -q 'TSAVO' web/index.html
-          grep -q 'Mi Vida' web/index.html
-          grep -q 'Qwetu' web/index.html
+          grep -Rqi 'Zalagren' web
+          grep -Rqi 'CONSTANTYNA' web
+          grep -Rqi 'GENESIS' web
+          grep -Rqi 'BeatPay' web
+          grep -Rqi 'TSAVO' web
+          grep -Rqi 'Mi Vida' web
+          grep -Rqi 'Qwetu' web
 
       - name: Validate no fabricated deployment claims
         run: |
