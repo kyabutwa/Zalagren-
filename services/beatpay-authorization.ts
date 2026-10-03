@@ -74,6 +74,9 @@ export async function authorizeBeatPayPayment(
   }
   if (!authorization) return { allowed: false, reason: "AUTHORIZATION_NOT_ACTIVE" };
   if (!authorization.conditionsReference?.trim()) return { allowed: false, reason: "CONDITIONS_REQUIRED" };
+  if (!context || context.id !== request.contextId || context.status !== "ACTIVE") {
+    return { allowed: false, reason: "CONTEXT_MISMATCH" };
+  }
 
   if (capability.key !== `beatpay.payment.${request.serviceId}`) {
     return { allowed: false, reason: "SERVICE_MISMATCH" };
