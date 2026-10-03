@@ -40,11 +40,30 @@ jobs:
           grep -Rqi 'TSAVO' web
           grep -Rqi 'Mi Vida' web
           grep -Rqi 'Qwetu' web
-          grep -Rqi 'EXECUTION GATE\|Create proposal' web/app.js
+          grep -q 'pushState' web/app.js
+          grep -q 'popstate' web/app.js
+          grep -q 'history.forward' web/app.js
+          grep -q 'safe-area-inset-bottom' web/styles.css
 
       - name: Validate no fabricated deployment claims
         run: |
           ! grep -RniE 'fake success|payment successful|booking confirmed|provider connected' web
+
+      - name: Prepare uploaded image assets
+        run: |
+          mkdir -p web/assets
+          for src in IMG_1505.jpeg IMG_1506.jpeg IMG_1507.jpeg IMG_1508.jpeg IMG_1509.jpeg IMG_1510.jpeg; do
+            test -f "$src"
+            base="$(basename "$src" .jpeg)"
+            convert "$src" -alpha on -fuzz 8% -fill none -draw "color 0,0 floodfill" "web/assets/${base}.png"
+          done
+          test "$(find web/assets -name '*.png' | wc -l)" -eq 6
+
+      - name: Validate prepared assets
+        run: |
+          file web/assets/*.png
+          identify -format '%f %wx%h %[channels]\n' web/assets/*.png | tee /tmp/assets.txt
+          grep -q 'srgba' /tmp/assets.txt
 
       - uses: actions/configure-pages@v5
 
@@ -62,5 +81,10 @@ jobs:
         run: |
           test -n "$PAGE_URL"
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL" | grep -qi "Zalagren"
-          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/app.js" | grep -qi "EXECUTION GATE"
+          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/app.js" | grep -qi "popstate"
+          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/styles.css" | grep -qi "safe-area-inset-bottom"
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/manifest.webmanifest" | grep -qi "Zalagren"
+          for asset in IMG_1505 IMG_1506 IMG_1507 IMG_1508 IMG_1509 IMG_1510; do
+            curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/assets/$asset.png" -o /tmp/$asset.png
+            test -s /tmp/$asset.png
+          done
