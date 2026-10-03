@@ -134,7 +134,7 @@
       '<div class="chat" id="chat"><div class="message assistant"><b>CONSTANTYNA</b><p>I can explain the ecosystem, help frame a need, identify opportunities and propose useful next steps. I cannot authorize myself or claim an external transaction happened when it did not.</p></div><div id="messages"></div></div>'+
       '<form id="askForm" class="composer"><input id="askInput" autocomplete="off" placeholder="Ask: What can Zalagren do for me?"><button class="send">Send</button></form>'+
       '<div class="chips">'+["Explain Zalagren","Find an opportunity","How does BeatPay work?","Show my communities"].map(x=>'<button class="chip" data-prompt="'+esc(x)+'">'+esc(x)+'</button>').join("")+'</div>'+
-      '<div class="grid two intelligence-cards"><button class="card action" data-route="activity"><span class="badge green">SUPPORTED</span><h3>GENESIS</h3><p>Observe → understand → contextualize → detect → reason → propose → authorize → execute → measure → learn.</p><b class="chev">›</b></button><div class="card"><span class="badge green">SUPPORTED</span><h3>Governed intelligence</h3><p>Understanding Zalagren is not authority to control Zalagren.</p></div></div></section>';
+      '<div class="section-head"><div><h2>Intelligence architecture</h2><p>Proposal, authority and evidence stay separate.</p></div></div><div class="grid two"><div class="card"><span class="badge green">SUPPORTED</span><h3>GENESIS</h3><p>Observe → understand → contextualize → detect → reason → propose → authorize → execute → measure → learn.</p></div><div class="card"><span class="badge green">SUPPORTED</span><h3>CONSTANTYNA</h3><p>Explains Zalagren, frames needs, compares options and proposes useful next steps.</p></div><div class="card"><span class="badge green">SUPPORTED</span><h3>Evidence</h3><p>Authoritative evidence separates a proposed outcome from a verified real-world outcome.</p></div><div class="card"><span class="badge green">SUPPORTED</span><h3>Knowledge</h3><p>Evidence-derived understanding; history is never rewritten.</p></div><div class="card"><span class="badge green">SUPPORTED</span><h3>Proposal</h3><p>A suggested path is never itself authorization.</p></div></div>'+'<div class="grid two intelligence-cards"><button class="card action" data-route="activity"><span class="badge green">SUPPORTED</span><h3>GENESIS</h3><p>Observe → understand → contextualize → detect → reason → propose → authorize → execute → measure → learn.</p><b class="chev">›</b></button><div class="card"><span class="badge green">SUPPORTED</span><h3>Governed intelligence</h3><p>Understanding Zalagren is not authority to control Zalagren.</p></div></div></section>';
   }
 
   function people(){
@@ -273,7 +273,7 @@
   function render(route){
     closeMenu();
     let content;
-    if(route.view==="intelligence")content=intelligenceArchitecture();
+    if(route.view==="intelligence")content=intelligence();
     else if(route.view==="people")content=people();
     else if(route.view==="ecosystem")content=ecosystemPage();
     else if(route.view==="foundation")content=foundationPage();
