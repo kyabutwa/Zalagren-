@@ -44,6 +44,15 @@ jobs:
           grep -q 'popstate' web/app.js
           grep -q 'history.forward' web/app.js
           grep -q 'safe-area-inset-bottom' web/styles.css
+          grep -q 'foundationPage' web/app.js
+          grep -q 'securityPage' web/app.js
+          grep -q 'ecosystemPage' web/app.js
+          grep -q 'assets/IMG_1505.png' web/app.js
+          grep -q 'assets/IMG_1507.png' web/app.js
+          grep -q 'assets/IMG_1508.png' web/app.js
+          grep -q 'assets/IMG_1509.png' web/app.js
+          grep -q 'assets/IMG_1510.png' web/app.js
+          test -f docs/WEB-ARTWORK-MAP.md
 
       - name: Validate no fabricated deployment claims
         run: |
