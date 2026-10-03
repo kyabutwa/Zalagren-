@@ -113,5 +113,9 @@ export function isGenesisCodeDisclosureRequested(message: string): boolean {
     "change the foundation",
     "give me the repository",
     "give me the code",
+    "source code",
+    "codebase",
+    "internal implementation",
+    "rebuild",
   ].some((phrase) => value.includes(phrase));
 }
