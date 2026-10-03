@@ -13,14 +13,15 @@
   ];
   const services = [
     ["BeatPay","Authorized payment coordination through regulated external rails.","SUPPORTED"],
-    ["BeatFood","Food discovery, ordering and provider fulfilment.","PROPOSED"],
-    ["BeatHealth","Health discovery, appointments and care workflows.","PROPOSED"],
+    ["BeatFood","Food discovery, ordering and provider fulfilment; provider delivery is independently evidenced.","SUPPORTED"],
+    ["BeatHealth","Protected health discovery, appointments and care coordination; clinical authority remains external.","SUPPORTED"],
     ["BeatGenzi","Jobs, services, training, partnerships and opportunity discovery.","SUPPORTED"],
-    ["BeatMarket","Marketplace coordination with category, seller, consumer and safety controls.","PROPOSED"],
-    ["BeatRide","Mobility coordination; Zalagren is not the transport operator.","PROPOSED"],
-    ["BeatBnB","Accommodation coordination; no guaranteed booking or occupancy.","PROPOSED"],
-    ["Home Services","Cleaning, repair, laundry and property maintenance coordination.","SUPPORTED"],
-    ["Utilities","Water, electricity, gas, waste and internet coordination.","PROPOSED"]
+    ["BeatMarket","Marketplace coordination with category, seller, consumer and safety controls.","SUPPORTED"],
+    ["BeatRide","Mobility coordination with explicit driver, vehicle, safety and regulatory boundaries.","SUPPORTED"],
+    ["BeatBnB","Accommodation coordination with explicit host, property, availability and stay evidence.","SUPPORTED"],
+    ["BeatGuardian","Trusted check-ins and incident coordination without replacing emergency authorities.","SUPPORTED"],
+    ["BeatUtilities","Water, electricity, gas, waste and connectivity coordination against authoritative providers.","SUPPORTED"],
+    ["Home Services","Cleaning, repair, laundry and property maintenance coordination.","SUPPORTED"]
   ];
 
   const artwork = {
@@ -157,8 +158,8 @@
   }
 
   function serviceIcon(i,s){
-    const map={0:artwork.transactions,1:artwork.food,3:artwork.genzi,6:artwork.hospitality};
-    const a=map[i];
+    const map={BeatPay:artwork.transactions,BeatFood:artwork.food,BeatGenzi:artwork.genzi,BeatBnB:artwork.hospitality};
+    const a=map[s[0]];
     return a?'<img src="'+a.src+'" alt="'+esc(a.alt)+'">':'<span>'+esc(s[0].slice(0,1))+'</span>';
   }
 
