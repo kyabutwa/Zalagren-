@@ -29,3 +29,6 @@ External integrations may return ACCEPTED, REJECTED or UNKNOWN. UNKNOWN requires
 ## Definition of done
 
 Typecheck → tests → build → deployment → production verification → real workflow verification.
+
+
+Verification note: CI, Web and iOS workflows must all pass on the same migration commit before release.
