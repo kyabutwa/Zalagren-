@@ -54,6 +54,15 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq imagemagick
 
+      - name: Inspect uploaded images
+        run: |
+          sudo apt-get install -y -qq tesseract-ocr
+          for src in IMG_1505.jpeg IMG_1506.jpeg IMG_1507.jpeg IMG_1508.jpeg IMG_1509.jpeg IMG_1510.jpeg; do
+            echo "===== $src ====="
+            identify "$src"
+            tesseract "$src" stdout 2>/dev/null || true
+          done
+
       - name: Prepare uploaded image assets
         run: |
           mkdir -p web/assets
