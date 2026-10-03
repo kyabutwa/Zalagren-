@@ -24,7 +24,7 @@
   ];
   const topNav = [
     ["home","⌂","Home"],["intelligence","✦","Intelligence"],["people","◎","People"],
-    ["community","⌂","Community"],["services","◇","Services"],["activity","◷","Activity"]
+    ["services","◇","Services"],["activity","◷","Activity"]
   ];
   const titles = {
     home:"Home", intelligence:"Intelligence", people:"People", community:"Community",
@@ -105,7 +105,7 @@
       '<div class="identity card"><div class="avatar">P</div><div><small>PARTICIPANT</small><h3>'+esc(state.participant.name)+'</h3><p>Account → Participant → Relationships → Contexts → Capabilities → Authorizations</p></div>'+badge("SUPPORTED")+'</div>'+
       '<div class="section-head"><h2>Contexts</h2><p>Context changes relevance. It does not silently grant authority.</p></div><div class="grid two">'+
       ["Personal","Community"].map(c=>'<button class="card context-card '+(state.participant.context===c?"selected":"")+'" data-context="'+c+'"><strong>'+c+'</strong><span>'+ (c==="Personal"?"Direct participation across Zalagren.":"Participation through an adopted community context.")+'</span><b class="chev">›</b></button>').join("")+'</div>'+
-      '<div class="section-head"><h2>Relationships</h2></div><div class="listrow"><div><strong>Participant</strong><small>Primary Zalagren participation identity</small></div>'+badge("SUPPORTED")+'</div>'+
+      '<div class="section-head"><h2>Community spaces</h2><p>Open a community context without creating another identity.</p></div><button class="card action community-entry" data-route="community"><strong>Explore communities</strong><span>TSAVO Royal Suburbs · Mi Vida Garden City · Qwetu Ruaraka</span><b class="chev">›</b></button><div class="section-head"><h2>Relationships</h2></div><div class="listrow"><div><strong>Participant</strong><small>Primary Zalagren participation identity</small></div>'+badge("SUPPORTED")+'</div>'+
       '<div class="listrow"><div><strong>Potential roles</strong><small>Resident · owner · worker · provider · visitor · driver</small></div>'+badge("SUPPORTED")+'</div>'+
       '<div class="callout compact"><h3>Authentication ≠ Authorization</h3><p>Being signed in, subscribed, related to a place or holding a role does not by itself permit a consequential action.</p></div></section>';
   }
