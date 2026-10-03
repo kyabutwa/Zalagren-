@@ -1,4 +1,6 @@
 import {applyBeatPayCallback,assertNoPaymentSecret,createBeatPayIntent,transitionBeatPayIntent,type BeatPayEventStore} from "../services/beatpay";
+
+(async()=>{
 const intent=createBeatPayIntent({id:"pay-1",participantId:"participant-1",direction:"COLLECTION",rail:"M_PESA",amountMinor:15000,currency:"KES",merchantReference:"REQ-1",authorizationReference:"auth-1",createdAt:"2026-10-03T10:00:00.000Z"});
 if(intent.status!=="CREATED")throw new Error("BeatPay intent must start as CREATED");
 const submitted=transitionBeatPayIntent(intent,"SUBMITTED","2026-10-03T10:01:00.000Z",{providerReference:"provider-1"});
@@ -14,3 +16,4 @@ if(mismatch.result.reason!=="AMOUNT_MISMATCH")throw new Error("BeatPay amount mi
 let invalid=false;try{transitionBeatPayIntent(applied.intent!,"PENDING")}catch{invalid=true}if(!invalid)throw new Error("BeatPay terminal transition must fail");
 let secret=false;try{assertNoPaymentSecret({token:"forbidden"})}catch{secret=true}if(!secret)throw new Error("BeatPay must reject secret-bearing domain objects");
 console.log("BeatPay tests passed");
+})().catch((error)=>{console.error(error);process.exitCode=1});
