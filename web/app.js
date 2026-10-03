@@ -156,9 +156,15 @@
       '<div class="callout compact"><h3>Community authority is contextual.</h3><p>Communities coordinate participation and management. Zalagren services remain platform capabilities and cannot be silently blocked by a community.</p></div></section>';
   }
 
+  function serviceIcon(i,s){
+    const map={0:artwork.transactions,1:artwork.food,3:artwork.genzi,6:artwork.hospitality};
+    const a=map[i];
+    return a?'<img src="'+a.src+'" alt="'+esc(a.alt)+'">':'<span>'+esc(s[0].slice(0,1))+'</span>';
+  }
+
   function servicesView(){
     return '<section class="section first"><span class="eyebrow dark">SERVICES</span><h1 class="page-title">Turn needs into governed outcomes.</h1><p class="lead">A service definition is not a connected provider. Zalagren never invents fulfilment, payment, booking or success.</p>'+
-      '<div class="service-list">'+services.map((s,i)=>'<button class="service-row" data-service="'+i+'"><div class="service-icon">'+s[0].slice(0,1)+'</div><div class="service-copy"><strong>'+s[0]+'</strong><small>'+s[1]+'</small></div>'+badge(s[2])+'<span class="chev">›</span></button>').join("")+'</div></section>';
+      '<div class="service-list">'+services.map((s,i)=>'<button class="service-row" data-service="'+i+'"><div class="service-icon">'+serviceIcon(i,s)+'</div><div class="service-copy"><strong>'+s[0]+'</strong><small>'+s[1]+'</small></div>'+badge(s[2])+'<span class="chev">›</span></button>').join("")+'</div></section>';
   }
 
   function serviceDetail(i){
@@ -205,8 +211,8 @@
     const s=document.getElementById("sheet");
     s.hidden=false;
     s.innerHTML='<div class="sheet-backdrop" id="sheetClose"></div><div class="sheet-panel"><div class="sheet-grabber"></div><div class="section-head"><div><span class="eyebrow dark">ZALAGREN</span><h2>Menu</h2></div><button class="close" id="sheetCloseBtn">×</button></div>'+
-      '<button class="menu-row" data-route="people"><strong>Participant & contexts</strong><span>Identity, relationships and context</span>›</button>'+
-      '<button class="menu-row" data-route="activity"><strong>Activity & evidence</strong><span>Trace governed lifecycle</span>›</button>'+
+      '<button class="menu-row" data-route="foundation"><strong>Platform foundation</strong><span>Identity, account, participant, places, organizations</span>›</button><button class="menu-row" data-route="ecosystem"><strong>Full ecosystem map</strong><span>All domains and uploaded artwork</span>›</button><button class="menu-row" data-route="people"><strong>Participant & contexts</strong><span>Identity, relationships and context</span>›</button>'+
+      '<button class="menu-row" data-route="activity"><strong>Activity & evidence</strong><span>Trace governed lifecycle</span>›</button><button class="menu-row" data-route="security"><strong>Security & trust</strong><span>Authorization, privacy and failure states</span>›</button>'+
       '<div class="menu-row static"><strong>Voice preferences</strong><span>Participant-controlled; integration status is not simulated.</span></div>'+
       '<div class="menu-row static"><strong>Privacy</strong><span>Minimum necessary information, explicit sharing and auditable state.</span></div></div>';
     document.getElementById("sheetClose").onclick=closeMenu;
@@ -267,8 +273,11 @@
   function render(route){
     closeMenu();
     let content;
-    if(route.view==="intelligence")content=intelligence();
+    if(route.view==="intelligence")content=intelligenceArchitecture();
     else if(route.view==="people")content=people();
+    else if(route.view==="ecosystem")content=ecosystemPage();
+    else if(route.view==="foundation")content=foundationPage();
+    else if(route.view==="security")content=securityPage();
     else if(route.view==="community")content=community();
     else if(route.view==="services")content=servicesView();
     else if(route.view==="service")content=serviceDetail(Number(route.service));
