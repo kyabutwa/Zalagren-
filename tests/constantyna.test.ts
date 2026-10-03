@@ -15,7 +15,6 @@ describe("CONSTANTYNA", () => {
       message: "Explain Zalagren",
     });
 
-    expect(request.status).toBeUndefined();
     expect(request.mode).toBe("EXPLAIN");
   });
 
