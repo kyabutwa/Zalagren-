@@ -41,7 +41,7 @@
     ["Knowledge","Evidence-derived understanding","History is never rewritten."],["Proposal","A suggested path","Proposal ≠ authorization."]
   ];
   const securityLayers = [
-    ["Authentication","Who is signed in","Does not grant consequential authority."],["Authorization","What this participant may do now","Checks capability, context, target, status and time."],["Privacy","Minimum necessary information","Purpose, sharing, retention, deletion and export."],["Audit","Traceable events","Actions and evidence remain attributable."],["Failure states","Offline · pending · retry · sync · conflict · rejection · failure · recovery","No fake success."],["External trust","Provider remains authoritative","External execution is only real when independently evidenced."]
+    ["Authentication","Who is signed in","Does not grant consequential authority."],["Authorization","What this participant may do now","Checks capability, context, target, status and time."],["Privacy","Minimum necessary information","Purpose, sharing, retention, deletion and export."],["Audit","Traceable events","Actions and evidence remain attributable."],["Failure states","Offline · pending · retry · sync · conflict · rejection · failure · recovery","No unverified success."],["External trust","Provider remains authoritative","External execution is only real when independently evidenced."]
   ];
   const topNav = [
     ["home","⌂","Home"],["intelligence","✦","Intelligence"],["people","◎","People"],
