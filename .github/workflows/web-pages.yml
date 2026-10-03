@@ -49,6 +49,11 @@ jobs:
         run: |
           ! grep -RniE 'fake success|payment successful|booking confirmed|provider connected' web
 
+      - name: Install image processing dependency
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq imagemagick
+
       - name: Prepare uploaded image assets
         run: |
           mkdir -p web/assets
