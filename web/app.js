@@ -22,6 +22,27 @@
     ["Home Services","Cleaning, repair, laundry and property maintenance coordination.","SUPPORTED"],
     ["Utilities","Water, electricity, gas, waste and internet coordination.","PROPOSED"]
   ];
+
+  const artwork = {
+    identity:{src:"assets/IMG_1505.png",alt:"Zalagren Identity + Access artwork",label:"Identity + Access"},
+    transactions:{src:"assets/IMG_1506.png",alt:"Zalagren Music + Transactions artwork",label:"Music + Transactions"},
+    food:{src:"assets/IMG_1507.png",alt:"Zalagren Food + Delivery artwork",label:"Food + Delivery"},
+    hospitality:{src:"assets/IMG_1508.png",alt:"Zalagren Accommodation Hospitality artwork",label:"Accommodation Hospitality"},
+    genzi:{src:"assets/IMG_1509.png",alt:"Zalagren Connect + Empower Generation artwork",label:"Connect + Empower · Generation"},
+    logo:{src:"assets/IMG_1510.png",alt:"Zalagren primary logo artwork",label:"Zalagren"}
+  };
+  const foundation = [
+    ["Identity","Legal / verified identity","One durable identity boundary."],["Account","Zalagren account","Authentication container; not a role."],["Subscription","Participation plan","Commercial relationship, not permission."],["Entitlement","Available capability","What the account can access by plan."],["Participant","Canonical actor","One participant can hold many relationships."],["People","Human relationships","Resident, owner, worker, provider, visitor and more."],["Communities","Participation coordinators","Community context without owning platform services."],["Relationship","Participant ↔ context","Describes connection; never silently authorizes."],["Context","Where / why / when","Makes capability relevant."],["Place","Site → phase → building → unit","Canonical physical hierarchy."],["Organization","Institutional entity","Company, nonprofit, government, cooperative or other."],["Provider","Operational service identity","Can fulfil a service; provider status is not authority."],["Capability","What can be done","A declared ability, not permission."],["Authorization","Explicit authority","Contextual, effective, revocable and fail-closed."]
+  ];
+  const intelligenceLayers = [
+    ["GENESIS","Observe → Understand → Contextualize → Detect → Reason → Propose → Authorize → Execute → Measure → Learn.","Governed intelligence loop."],
+    ["CONSTANTYNA","Explain → frame needs → compare options → propose useful next steps.","Human-facing intelligence interface."],
+    ["Evidence","Observed / authoritative proof","The boundary between a proposed outcome and a verified outcome."],
+    ["Knowledge","Evidence-derived understanding","History is never rewritten."],["Proposal","A suggested path","Proposal ≠ authorization."]
+  ];
+  const securityLayers = [
+    ["Authentication","Who is signed in","Does not grant consequential authority."],["Authorization","What this participant may do now","Checks capability, context, target, status and time."],["Privacy","Minimum necessary information","Purpose, sharing, retention, deletion and export."],["Audit","Traceable events","Actions and evidence remain attributable."],["Failure states","Offline · pending · retry · sync · conflict · rejection · failure · recovery","No fake success."],["External trust","Provider remains authoritative","External execution is only real when independently evidenced."]
+  ];
   const topNav = [
     ["home","⌂","Home"],["intelligence","✦","Intelligence"],["people","◎","People"],
     ["services","◇","Services"],["activity","◷","Activity"]
@@ -69,7 +90,7 @@
     const forward = navState.idx<navState.total-1 ? '<button class="nav-control" id="forwardBtn" aria-label="Forward">›</button>' : '<span class="nav-spacer"></span>';
     document.getElementById("app").innerHTML =
       '<header class="top"><div class="topbar">'+back+
-      '<button class="brand" data-view="home"><span class="mark">Z</span><span>Zalagren</span></button>'+
+      '<button class="brand" data-view="home"><span class="mark"><img src="assets/IMG_1510.png" alt="Zalagren logo"></span><span>Zalagren</span></button>'+
       '<div class="location"><strong>'+esc(crumb[crumb.length-1])+'</strong><small>'+crumb.slice(0,-1).map(esc).join("  /  ")+'</small></div>'+
       '<div class="top-actions">'+forward+'<button class="menu" id="menuBtn" aria-label="Open menu">•••</button></div>'+
       '</div></header><main class="shell">'+content+'</main>'+
