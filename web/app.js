@@ -1,142 +1,250 @@
 (() => {
-  const state = JSON.parse(localStorage.getItem("zalagren-demo") || "null") || {
+  const KEY = "zalagren-demo";
+  const initial = {
     participant: { name: "Demo Participant", mode: "PEOPLE", context: "Personal" },
-    intents: [], proposals: [], actions: [], events: [], evidence: [], selectedCommunity: "TSAVO Royal Suburbs"
+    intents: [], proposals: [], actions: [], events: [], evidence: [],
+    selectedCommunity: "TSAVO Royal Suburbs"
   };
+  const state = Object.assign(initial, JSON.parse(localStorage.getItem(KEY) || "null") || {});
   const communities = [
     {name:"TSAVO Royal Suburbs",place:"Roysambu, Nairobi",kind:"Residential community",note:"Evidence-backed instance; no invented residents or permissions."},
     {name:"Mi Vida Garden City",place:"Garden City, Thika Road, Nairobi",kind:"Residential community",note:"Exact phase/building/unit inventory is not inferred."},
-    {name:"Qwetu Ruaraka",place:"Outer Ring Road, Nairobi",kind:"Student residence",note:"580 beds according to the referenced 2024 evidence; no invented rooms or residents."}
+    {name:"Qwetu Ruaraka",place:"Outer Ring Road, Nairobi",kind:"Student residence",note:"580 beds according to referenced evidence; no invented rooms or residents."}
   ];
   const services = [
     ["BeatPay","Authorized payment coordination through regulated external rails.","SUPPORTED"],
     ["BeatFood","Food discovery, ordering and provider fulfilment.","PROPOSED"],
     ["BeatHealth","Health discovery, appointments and care workflows.","PROPOSED"],
-    ["BeatGenzi","Jobs, services, training, partnerships and economic opportunity discovery.","SUPPORTED"],
+    ["BeatGenzi","Jobs, services, training, partnerships and opportunity discovery.","SUPPORTED"],
     ["BeatMarket","Marketplace coordination with category, seller, consumer and safety controls.","PROPOSED"],
     ["BeatRide","Mobility coordination; Zalagren is not the transport operator.","PROPOSED"],
     ["BeatBnB","Accommodation coordination; no guaranteed booking or occupancy.","PROPOSED"],
     ["Home Services","Cleaning, repair, laundry and property maintenance coordination.","SUPPORTED"],
     ["Utilities","Water, electricity, gas, waste and internet coordination.","PROPOSED"]
   ];
-  const nav = [["home","⌂","Home"],["ask","◌","Ask"],["people","◎","People"],["community","⌂","Community"],["services","◇","Services"],["activity","◷","Activity"]];
-  function save(){localStorage.setItem("zalagren-demo",JSON.stringify(state))}
-  function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-  function badge(v){return '<span class="badge '+(v==="SUPPORTED"||v==="VERIFIED"?"green":v==="PROPOSED"?"orange":"blue")+'">'+esc(v)+'</span>'}
-  function shell(view,content){
-    document.getElementById("app").innerHTML =
-      '<header class="top"><div class="topbar"><button class="brand" data-view="home"><span class="mark">Z</span><span>Zalagren</span></button><div class="context">'+esc(state.participant.context)+' <span>·</span> '+esc(state.participant.mode)+'</div><button class="menu" id="menuBtn">•••</button></div></header>'+
-      '<main class="shell">'+content+'</main>'+
-      '<nav class="bottom">'+nav.map(([id,icon,label])=>'<button data-view="'+id+'" class="'+(view===id?"active":"")+'"><i>'+icon+'</i><span>'+label+'</span></button>').join("")+'</nav><div id="toast" class="toast"></div>';
-    document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>render(b.dataset.view)));
-    document.getElementById("menuBtn").onclick=()=>alert("Zalagren\\n\\nParticipant controls\\nPrivacy\\nVoice preferences\\nContext selection\\nTruth states\\nSign out");
+  const topNav = [
+    ["home","⌂","Home"],["intelligence","✦","Intelligence"],["people","◎","People"],
+    ["community","⌂","Community"],["services","◇","Services"],["activity","◷","Activity"]
+  ];
+  const titles = {
+    home:"Home", intelligence:"Intelligence", people:"People", community:"Community",
+    services:"Services", activity:"Activity", lifecycle:"Execution", service:"Service"
+  };
+
+  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+  function esc(v){ return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c])); }
+  function badge(v){
+    const tone = v==="SUPPORTED"||v==="VERIFIED" ? "green" : v==="PROPOSED" ? "orange" : "blue";
+    return '<span class="badge '+tone+'">'+esc(v)+'</span>';
   }
+
+  function readRoute(){
+    const p = new URLSearchParams(location.search);
+    return { view:p.get("view") || "home", service:p.get("service"), community:p.get("community"), context:p.get("context") };
+  }
+  function routeLabel(route){
+    if(route.view==="service") return ["Services", services[Number(route.service)]?.[0] || "Service"];
+    if(route.view==="lifecycle") return ["Activity","Execution lifecycle"];
+    if(route.view==="community" && route.community) return ["Community", route.community];
+    return [titles[route.view] || "Home"];
+  }
+  function currentNavState(){
+    return history.state && history.state.zalagren ? history.state.zalagren : {idx:0,total:1};
+  }
+  function navigate(view, params={}, replace=false){
+    const q = new URLSearchParams({view});
+    Object.entries(params).forEach(([k,v])=>{ if(v!==undefined && v!==null && v!=="") q.set(k,v); });
+    const cur=currentNavState();
+    const next={idx:replace?cur.idx:cur.idx+1,total:replace?cur.total:cur.idx+2};
+    const url=location.pathname+"?"+q.toString();
+    history[replace?"replaceState":"pushState"]({zalagren:next}, "", url);
+    render(readRoute());
+  }
+  function goBack(){ if(currentNavState().idx>0) history.back(); else navigate("home",{},true); }
+  function goForward(){ if(currentNavState().idx<currentNavState().total-1) history.forward(); }
+
+  function shell(route, content, nested=false){
+    const navState=currentNavState(), crumb=routeLabel(route);
+    const back = navState.idx>0 ? '<button class="nav-control" id="backBtn" aria-label="Back">‹<span>Back</span></button>' : '<span class="nav-spacer"></span>';
+    const forward = navState.idx<navState.total-1 ? '<button class="nav-control" id="forwardBtn" aria-label="Forward">›</button>' : '<span class="nav-spacer"></span>';
+    document.getElementById("app").innerHTML =
+      '<header class="top"><div class="topbar">'+back+
+      '<button class="brand" data-view="home"><span class="mark">Z</span><span>Zalagren</span></button>'+
+      '<div class="location"><strong>'+esc(crumb[crumb.length-1])+'</strong><small>'+crumb.slice(0,-1).map(esc).join("  /  ")+'</small></div>'+
+      '<div class="top-actions">'+forward+'<button class="menu" id="menuBtn" aria-label="Open menu">•••</button></div>'+
+      '</div></header><main class="shell">'+content+'</main>'+
+      '<nav class="bottom" aria-label="Primary">'+topNav.map(([id,icon,label])=>'<button data-view="'+id+'" class="'+(route.view===id||(nested&&id==="services"&&route.view==="service")?"active":"")+'"><i>'+icon+'</i><span>'+label+'</span></button>').join("")+'</nav>'+
+      '<div id="toast" class="toast"></div><div id="sheet" class="sheet" hidden></div>';
+
+    document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.view)));
+    document.getElementById("backBtn")?.addEventListener("click",goBack);
+    document.getElementById("forwardBtn")?.addEventListener("click",goForward);
+    document.getElementById("menuBtn").onclick=openMenu;
+  }
+
   function home(){
     const recent=state.events.slice(-3).reverse();
-    return '<section class="hero"><div class="eyebrow">INTELLIGENT LIVING INFRASTRUCTURE</div><h1>Your identity.<br>Your world.<br><em>One ecosystem.</em></h1><p>Zalagren connects people, communities, places, organizations, providers, services and resources through governed participation.</p><div class="hero-actions"><button class="btn primary" data-view="ask">Ask CONSTANTYNA</button><button class="btn ghost" data-view="community">Explore communities</button></div></section>'+
-      '<section class="section"><div class="section-head"><div><span class="eyebrow dark">YOUR ZALAGREN</span><h2>Command center</h2></div></div><div class="grid four">'+
-      [['people','People','Identity, participant, relationships and context'],['community','Community','Places, buildings, units and participation'],['services','Services','Needs, eligibility, proposals and fulfilment'],['activity','Activity','Intent → proposal → action → event → evidence']].map(x=>'<button class="card action" data-view="'+x[0]+'"><strong>'+x[1]+'</strong><span>'+x[2]+'</span></button>').join("")+
-      '</div></section><section class="section"><div class="callout"><div><span class="eyebrow">GOVERNANCE</span><h2>No authorization → no consequential action.</h2><p>GENESIS can observe and propose. CONSTANTYNA can explain and help. Neither can grant authority to itself.</p></div><button class="btn light" data-view="activity">View activity</button></div></section>'+
+    return '<section class="hero"><div class="eyebrow">INTELLIGENT LIVING INFRASTRUCTURE</div><h1>Your identity.<br>Your world.<br><em>One ecosystem.</em></h1><p>Zalagren connects people, communities, places, organizations, providers, services and resources through governed participation.</p><div class="hero-actions"><button class="btn primary" data-route="intelligence">Ask CONSTANTYNA</button><button class="btn ghost" data-route="community">Explore communities</button></div></section>'+
+      '<section class="section"><div class="section-head"><div><span class="eyebrow dark">YOUR ZALAGREN</span><h2>Command center</h2></div><span class="micro-pill">One participant · many contexts</span></div><div class="grid four">'+
+      [['people','People','Identity, participant, relationships and context','◎'],['community','Community','Places, buildings, units and participation','⌂'],['services','Services','Needs, eligibility, proposals and fulfilment','◇'],['activity','Activity','Intent → proposal → authorization → action → evidence','◷']].map(x=>'<button class="card action" data-route="'+x[0]+'"><span class="card-icon">'+x[3]+'</span><strong>'+x[1]+'</strong><span>'+x[2]+'</span><b class="chev">›</b></button>').join("")+
+      '</div></section><section class="section"><div class="callout"><div><span class="eyebrow">GOVERNANCE</span><h2>No authorization → no consequential action.</h2><p>GENESIS can observe and propose. CONSTANTYNA can explain and help. Neither can grant authority to itself.</p></div><button class="btn light" data-route="activity">View activity</button></div></section>'+
       '<section class="section"><div class="section-head"><h2>Recent activity</h2>'+badge("SUPPORTED")+'</div>'+
       (recent.length?recent.map(e=>'<div class="listrow"><div><strong>'+esc(e.title)+'</strong><small>'+esc(e.detail)+'</small></div><span class="dot">●</span></div>').join(""):'<div class="empty">Your actions will appear here. Create an intent from a service or ask CONSTANTYNA.</div>')+'</section>';
   }
-  function ask(){
-    return '<section class="section first"><span class="eyebrow dark">INTELLIGENCE</span><h1 class="page-title">CONSTANTYNA</h1><p class="lead">Your human-facing intelligence interface. Ask about the ecosystem, services, communities, opportunities or your current context.</p>'+
-      '<div class="chat" id="chat"><div class="message assistant"><b>CONSTANTYNA</b><p>I can explain Zalagren, help you frame a need, compare options, identify opportunities and create proposals. I cannot authorize myself or claim an external transaction happened when it did not.</p></div><div id="messages"></div></div>'+
+
+  function intelligence(){
+    return '<section class="section first"><span class="eyebrow dark">INTELLIGENCE</span><h1 class="page-title">CONSTANTYNA</h1><p class="lead">A human-facing intelligence interface for understanding Zalagren, framing needs, comparing options and creating proposals.</p>'+
+      '<div class="chat" id="chat"><div class="message assistant"><b>CONSTANTYNA</b><p>I can explain the ecosystem, help frame a need, identify opportunities and propose useful next steps. I cannot authorize myself or claim an external transaction happened when it did not.</p></div><div id="messages"></div></div>'+
       '<form id="askForm" class="composer"><input id="askInput" autocomplete="off" placeholder="Ask: What can Zalagren do for me?"><button class="send">Send</button></form>'+
       '<div class="chips">'+["Explain Zalagren","Find an opportunity","How does BeatPay work?","Show my communities"].map(x=>'<button class="chip" data-prompt="'+esc(x)+'">'+esc(x)+'</button>').join("")+'</div>'+
-      '<div class="grid two intelligence-cards"><div class="card"><span class="badge green">SUPPORTED</span><h3>CONSTANTYNA</h3><p>Explain, reason with available information, compare, propose and communicate.</p></div><div class="card"><span class="badge green">SUPPORTED</span><h3>GENESIS</h3><p>Observe → understand → contextualize → detect → reason → propose → authorize → execute → measure → learn.</p></div></div></section>';
+      '<div class="grid two intelligence-cards"><button class="card action" data-route="activity"><span class="badge green">SUPPORTED</span><h3>GENESIS</h3><p>Observe → understand → contextualize → detect → reason → propose → authorize → execute → measure → learn.</p><b class="chev">›</b></button><div class="card"><span class="badge green">SUPPORTED</span><h3>Governed intelligence</h3><p>Understanding Zalagren is not authority to control Zalagren.</p></div></div></section>';
   }
+
   function people(){
     return '<section class="section first"><span class="eyebrow dark">PEOPLE</span><h1 class="page-title">One participant.<br>Many relationships.</h1>'+
       '<div class="identity card"><div class="avatar">P</div><div><small>PARTICIPANT</small><h3>'+esc(state.participant.name)+'</h3><p>Account → Participant → Relationships → Contexts → Capabilities → Authorizations</p></div>'+badge("SUPPORTED")+'</div>'+
-      '<div class="section-head"><h2>Contexts</h2><p>Context changes what can be relevant. It does not silently grant authority.</p></div><div class="grid two">'+
-      '<button class="card context-card" data-context="Personal"><strong>Personal</strong><span>Direct participation across Zalagren.</span></button><button class="card context-card" data-context="Community"><strong>Community</strong><span>Participation through an adopted community context.</span></button></div>'+
+      '<div class="section-head"><h2>Contexts</h2><p>Context changes relevance. It does not silently grant authority.</p></div><div class="grid two">'+
+      ["Personal","Community"].map(c=>'<button class="card context-card '+(state.participant.context===c?"selected":"")+'" data-context="'+c+'"><strong>'+c+'</strong><span>'+ (c==="Personal"?"Direct participation across Zalagren.":"Participation through an adopted community context.")+'</span><b class="chev">›</b></button>').join("")+'</div>'+
       '<div class="section-head"><h2>Relationships</h2></div><div class="listrow"><div><strong>Participant</strong><small>Primary Zalagren participation identity</small></div>'+badge("SUPPORTED")+'</div>'+
       '<div class="listrow"><div><strong>Potential roles</strong><small>Resident · owner · worker · provider · visitor · driver</small></div>'+badge("SUPPORTED")+'</div>'+
       '<div class="callout compact"><h3>Authentication ≠ Authorization</h3><p>Being signed in, subscribed, related to a place or holding a role does not by itself permit a consequential action.</p></div></section>';
   }
+
   function community(){
+    const selected=state.selectedCommunity;
     return '<section class="section first"><span class="eyebrow dark">COMMUNITIES</span><h1 class="page-title">Places where participation becomes contextual.</h1>'+
-      '<div class="community-tabs">'+communities.map(c=>'<button class="tab '+(state.selectedCommunity===c.name?"selected":"")+'" data-community="'+esc(c.name)+'">'+esc(c.name)+'</button>').join("")+'</div>'+
-      '<div id="communityDetail"></div><div class="section-head"><h2>Place hierarchy</h2><p>The canonical physical model is explicit.</p></div>'+
-      '<div class="flow">'+["Place / Site","Phase","Building","Unit"].map((x,i)=>'<span><b>'+String(i+1)+'</b>'+x+'</span>').join('<i>→</i>')+'</div>'+
+      '<div class="community-tabs">'+communities.map(c=>'<button class="tab '+(selected===c.name?"selected":"")+'" data-community="'+esc(c.name)+'">'+esc(c.name)+'</button>').join("")+'</div>'+
+      '<div class="community-hero"><span class="badge green">INSTANCE</span><h2>'+esc(selected)+'</h2><p>'+esc((communities.find(c=>c.name===selected)||communities[0]).place)+' · '+esc((communities.find(c=>c.name===selected)||communities[0]).kind)+'</p><div class="note">'+esc((communities.find(c=>c.name===selected)||communities[0]).note)+'</div><div class="mini-grid"><div><small>PARTICIPATION</small><strong>Contextual</strong></div><div><small>INVENTORY</small><strong>Evidence only</strong></div><div><small>AUTHORITY</small><strong>Explicit</strong></div></div></div>'+
+      '<div class="section-head"><h2>Place hierarchy</h2><p>Canonical physical model.</p></div><div class="flow">'+["Place / Site","Phase","Building","Unit"].map((x,i)=>'<span><b>'+String(i+1)+'</b>'+x+'</span>').join('<i>→</i>')+'</div>'+
       '<div class="callout compact"><h3>Community authority is contextual.</h3><p>Communities coordinate participation and management. Zalagren services remain platform capabilities and cannot be silently blocked by a community.</p></div></section>';
   }
-  function renderCommunityDetail(){
-    const c=communities.find(x=>x.name===state.selectedCommunity)||communities[0],el=document.getElementById("communityDetail");
-    if(el)el.innerHTML='<div class="community-hero"><span class="badge green">INSTANCE</span><h2>'+esc(c.name)+'</h2><p>'+esc(c.place)+' · '+esc(c.kind)+'</p><div class="note">'+esc(c.note)+'</div><div class="mini-grid"><div><small>PARTICIPATION</small><strong>Contextual</strong></div><div><small>INVENTORY</small><strong>Evidence only</strong></div><div><small>AUTHORITY</small><strong>Explicit</strong></div></div></div>';
-  }
+
   function servicesView(){
     return '<section class="section first"><span class="eyebrow dark">SERVICES</span><h1 class="page-title">Turn needs into governed outcomes.</h1><p class="lead">A service definition is not a connected provider. Zalagren never invents fulfilment, payment, booking or success.</p>'+
-      '<div class="service-list">'+services.map((s,i)=>'<button class="service-row" data-service="'+i+'"><div class="service-icon">'+s[0].slice(0,1)+'</div><div class="service-copy"><strong>'+s[0]+'</strong><small>'+s[1]+'</small></div>'+badge(s[2])+'<span class="chev">›</span></button>').join("")+'</div><div id="serviceDetail"></div></section>';
+      '<div class="service-list">'+services.map((s,i)=>'<button class="service-row" data-service="'+i+'"><div class="service-icon">'+s[0].slice(0,1)+'</div><div class="service-copy"><strong>'+s[0]+'</strong><small>'+s[1]+'</small></div>'+badge(s[2])+'<span class="chev">›</span></button>').join("")+'</div></section>';
   }
+
+  function serviceDetail(i){
+    const s=services[i];
+    return '<section class="section first detail-view"><div class="detail-kicker"><span class="eyebrow dark">SERVICE</span>'+badge(s[2])+'</div><h1 class="page-title">'+esc(s[0])+'</h1><p class="lead">'+esc(s[1])+'</p>'+
+      '<div class="detail-card"><div class="section-head"><div><h2>Governed lifecycle</h2><p>Every consequential transition is explicit.</p></div></div><div class="lifecycle">'+["Need","Intent","Eligibility","Proposal","Authorization","Action","Event","Evidence"].map((x,n)=>'<span><b>'+String(n+1)+'</b>'+x+'</span>').join("")+'</div>'+
+      '<button class="btn primary darkbtn" id="createIntent">Create intent</button><p class="micro">Creating an intent does not place an order, charge money, book a provider or authorize execution.</p></div>'+
+      '<div class="detail-card"><h3>What this service is not</h3><p>No invented provider connection. No simulated external success. No self-authorized execution.</p></div></section>';
+  }
+
   function activity(){
     const items=[...state.intents.map(x=>({...x,type:"INTENT"})),...state.proposals.map(x=>({...x,type:"PROPOSAL"})),...state.actions.map(x=>({...x,type:"ACTION"})),...state.events.map(x=>({...x,type:"EVENT"})),...state.evidence.map(x=>({...x,type:"EVIDENCE"}))].reverse();
     return '<section class="section first"><span class="eyebrow dark">ACTIVITY & EVIDENCE</span><h1 class="page-title">Nothing important disappears.</h1>'+
       '<div class="flow timeline">'+["Intent","Proposal","Authorization","Action","Event","Evidence"].map((x,i)=>'<span><b>'+String(i+1)+'</b>'+x+'</span>').join('<i>→</i>')+'</div>'+
-      '<div class="section-head"><h2>Participant activity</h2><p>Platform state is persisted locally in this web client. External execution is never simulated as success.</p></div>'+
+      '<div class="section-head"><div><h2>Participant activity</h2><p>Browser state is local in this web preview. External execution is never simulated as success.</p></div><button class="btn darkbtn" id="lifecycleBtn">Open execution</button></div>'+
       (items.length?items.map(x=>'<div class="timeline-row"><span class="timeline-dot"></span><div><small>'+esc(x.type)+'</small><strong>'+esc(x.title)+'</strong><p>'+esc(x.detail||"")+'</p></div></div>').join(""):'<div class="empty">No activity yet. Create an intent from a service to begin the governed lifecycle.</div>')+
-      '<div class="callout compact"><h3>Evidence is the boundary of truth.</h3><p>An external provider must be authoritative before Zalagren records a real-world success.</p></div><button class="btn darkbtn" id="lifecycleBtn">Open execution lifecycle</button></section>';
+      '<div class="callout compact"><h3>Evidence is the boundary of truth.</h3><p>An external provider must be authoritative before Zalagren records a real-world success.</p></div></section>';
   }
-  function serviceDetail(i){
-    const s=services[i],el=document.getElementById("serviceDetail");if(!el)return;
-    el.innerHTML='<div class="drawer"><div class="section-head"><div><span class="eyebrow dark">SERVICE</span><h2>'+esc(s[0])+'</h2></div>'+badge(s[2])+'</div><p>'+esc(s[1])+'</p><div class="lifecycle">'+["Need","Intent","Eligibility","Proposal","Authorization","Action","Event","Evidence"].map((x,n)=>'<span><b>'+String(n+1)+'</b>'+x+'</span>').join("")+'</div><button class="btn primary darkbtn" id="createIntent">Create intent</button><p class="micro">Creating an intent does not place an order, charge money, book a provider or authorize execution.</p></div>';
-    document.getElementById("createIntent").onclick=()=>{
-  const id="intent-"+Date.now();
-  state.intents.push({id,title:s[0]+" request",detail:"Participant created a service intent; awaiting eligibility and proposal.",status:"CREATED",created:Date.now(),service:s[0]});
-  save(); toast("Intent created. No external action was executed."); render("activity");
-};
 
+  function openLifecycle(){
+    const last=state.intents[state.intents.length-1];
+    if(!last){toast("Create a service intent first.");return navigate("services");}
+    navigate("lifecycle");
   }
-  function render(view){
-    const content=view==="ask"?ask():view==="people"?people():view==="community"?community():view==="services"?servicesView():view==="activity"?activity():home();
-    shell(view,content);
-    if(view==="community"){document.querySelectorAll("[data-community]").forEach(b=>b.onclick=()=>{state.selectedCommunity=b.dataset.community;save();render("community")});renderCommunityDetail()}
-    if(view==="services")document.querySelectorAll("[data-service]").forEach(b=>b.onclick=()=>serviceDetail(Number(b.dataset.service)));
-    if(view==="ask")bindAsk();
-    if(view==="people")document.querySelectorAll("[data-context]").forEach(b=>b.onclick=()=>{state.participant.context=b.dataset.context;save();render("people")});
+
+  function lifecycle(){
+    const last=state.intents[state.intents.length-1];
+    const proposal=last&&state.proposals.find(x=>x.intentId===last.id);
+    const action=last&&state.actions.find(x=>x.intentId===last.id);
+    const event=action&&state.events.find(x=>x.actionId===action.id);
+    const evidence=event&&state.evidence.find(x=>x.eventId===event.id);
+    let html='<section class="section first"><span class="eyebrow dark">EXECUTION GATE</span><h1 class="page-title">Governed lifecycle</h1><p class="lead">Every consequential step is explicit. This web client cannot claim an external provider result without authoritative evidence.</p><div class="lifecycle-panel">';
+    html+='<div class="stage done"><b>1</b><strong>Intent</strong><small>Created</small></div>';
+    if(!proposal) html+='<button class="stage next" id="makeProposal"><b>2</b><strong>Proposal</strong><small>Create proposal</small></button>'; else html+='<div class="stage done"><b>2</b><strong>Proposal</strong><small>Created</small></div>';
+    if(proposal&&!proposal.authorized) html+='<button class="stage next" id="authorize"><b>3</b><strong>Authorization</strong><small>Participant approval</small></button>'; else if(proposal) html+='<div class="stage done"><b>3</b><strong>Authorization</strong><small>Authorized</small></div>';
+    if(proposal?.authorized&&!action) html+='<button class="stage next" id="execute"><b>4</b><strong>Action</strong><small>Record platform action</small></button>'; else if(action) html+='<div class="stage done"><b>4</b><strong>Action</strong><small>Recorded</small></div>';
+    if(action&&!event) html+='<button class="stage next" id="event"><b>5</b><strong>Event</strong><small>Record platform event</small></button>'; else if(event) html+='<div class="stage done"><b>5</b><strong>Event</strong><small>Recorded</small></div>';
+    if(event&&!evidence) html+='<button class="stage next" id="evidence"><b>6</b><strong>Evidence</strong><small>Attach local evidence</small></button>'; else if(event) html+='<div class="stage done"><b>6</b><strong>Evidence</strong><small>'+ (evidence?"Captured":"Pending") +'</small></div>';
+    html+='</div><div class="callout compact"><h3>Authorization is explicit.</h3><p>This preview records the participant decision locally. It does not charge, book, dispatch or contact an external provider.</p></div><div class="flow-actions"><button class="btn ghost dark-outline" id="backActivity">Back to activity</button>'+((proposal&&!proposal.authorized)||(!proposal)?'<span class="micro-pill">Next step is shown above</span>':'')+'</div></section>';
+    return html;
   }
+
+  function openMenu(){
+    const s=document.getElementById("sheet");
+    s.hidden=false;
+    s.innerHTML='<div class="sheet-backdrop" id="sheetClose"></div><div class="sheet-panel"><div class="sheet-grabber"></div><div class="section-head"><div><span class="eyebrow dark">ZALAGREN</span><h2>Menu</h2></div><button class="close" id="sheetCloseBtn">×</button></div>'+
+      '<button class="menu-row" data-route="people"><strong>Participant & contexts</strong><span>Identity, relationships and context</span>›</button>'+
+      '<button class="menu-row" data-route="activity"><strong>Activity & evidence</strong><span>Trace governed lifecycle</span>›</button>'+
+      '<div class="menu-row static"><strong>Voice preferences</strong><span>Participant-controlled; integration status is not simulated.</span></div>'+
+      '<div class="menu-row static"><strong>Privacy</strong><span>Minimum necessary information, explicit sharing and auditable state.</span></div></div>';
+    document.getElementById("sheetClose").onclick=closeMenu;
+    document.getElementById("sheetCloseBtn").onclick=closeMenu;
+    s.querySelectorAll("[data-route]").forEach(b=>b.onclick=()=>{closeMenu();navigate(b.dataset.route);});
+  }
+  function closeMenu(){const s=document.getElementById("sheet");if(s){s.hidden=true;s.innerHTML="";}}
+
+  function bind(route){
+    document.querySelectorAll("[data-route]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.route)));
+    if(route.view==="people") document.querySelectorAll("[data-context]").forEach(b=>b.onclick=()=>{state.participant.context=b.dataset.context;save();render(route);toast("Context changed locally.");});
+    if(route.view==="community") document.querySelectorAll("[data-community]").forEach(b=>b.onclick=()=>{state.selectedCommunity=b.dataset.community;save();navigate("community",{community:state.selectedCommunity});});
+    if(route.view==="services") document.querySelectorAll("[data-service]").forEach(b=>b.onclick=()=>navigate("service",{service:b.dataset.service}));
+    if(route.view==="service"){
+      const i=Number(route.service),s=services[i];
+      document.getElementById("createIntent")?.addEventListener("click",()=>{
+        const id="intent-"+Date.now();
+        state.intents.push({id,title:s[0]+" request",detail:"Participant created a service intent; awaiting eligibility and proposal.",status:"CREATED",created:Date.now(),service:s[0]});
+        save();toast("Intent created. No external action was executed.");navigate("lifecycle");
+      });
+    }
+    if(route.view==="intelligence") bindAsk();
+    if(route.view==="activity") document.getElementById("lifecycleBtn")?.addEventListener("click",openLifecycle);
+    if(route.view==="lifecycle"){
+      const last=state.intents[state.intents.length-1];
+      const proposal=last&&state.proposals.find(x=>x.intentId===last.id);
+      const action=last&&state.actions.find(x=>x.intentId===last.id);
+      const event=action&&state.events.find(x=>x.actionId===action.id);
+      const evidence=event&&state.evidence.find(x=>x.eventId===event.id);
+      document.getElementById("makeProposal")?.addEventListener("click",()=>{state.proposals.push({id:"proposal-"+Date.now(),intentId:last.id,title:last.title+" proposal",detail:"Proposal created from participant intent; awaiting authorization.",authorized:false,created:Date.now()});save();render(route);});
+      document.getElementById("authorize")?.addEventListener("click",()=>{const p=state.proposals.find(x=>x.intentId===last.id);p.authorized=true;p.authorizedAt=Date.now();p.detail="Participant explicitly authorized the proposed platform action.";save();render(route);});
+      document.getElementById("execute")?.addEventListener("click",()=>{const p=state.proposals.find(x=>x.intentId===last.id);if(!p?.authorized)return toast("Authorization required.");state.actions.push({id:"action-"+Date.now(),intentId:last.id,title:last.title+" action",detail:"Safe platform action recorded. No external provider execution occurred.",status:"RECORDED",created:Date.now()});save();render(route);});
+      document.getElementById("event")?.addEventListener("click",()=>{const a=state.actions.find(x=>x.intentId===last.id);if(!a)return toast("Action required.");state.events.push({id:"event-"+Date.now(),actionId:a.id,title:last.title+" event",detail:"Platform event recorded. External outcome remains unverified.",status:"RECORDED",created:Date.now()});save();render(route);});
+      document.getElementById("evidence")?.addEventListener("click",()=>{const e=state.events.find(x=>x.actionId===state.actions.find(x=>x.intentId===last.id)?.id);if(!e)return toast("Event required.");state.evidence.push({id:"evidence-"+Date.now(),eventId:e.id,title:last.title+" evidence",detail:"Local evidence record captured. No external provider proof is asserted.",status:"LOCAL",created:Date.now()});save();render(route);});
+      document.getElementById("backActivity")?.addEventListener("click",()=>navigate("activity"));
+      void proposal; void action; void event; void evidence;
+    }
+  }
+
   function bindAsk(){
     const form=document.getElementById("askForm"),input=document.getElementById("askInput"),messages=document.getElementById("messages");
     function answer(q){
       const l=q.toLowerCase();let a;
-      if(l.includes("beatpay"))a="BeatPay coordinates authorized payments through regulated external rails. Palm or phone recognition is not payment authorization, and Zalagren does not claim a payment succeeded without authoritative provider evidence.";
-      else if(l.includes("opportunity"))a="BeatGenzi is Zalagren's opportunity-discovery capability. It can structure jobs, services, training, partnerships and other opportunities, but it never guarantees an outcome.";
-      else if(l.includes("community"))a="You can participate directly as a person or through community contexts such as TSAVO Royal Suburbs, Mi Vida Garden City and Qwetu Ruaraka. Community relationships do not replace your Zalagren identity.";
-      else if(l.includes("explain")||l.includes("zalagren"))a="Zalagren is an intelligent living infrastructure: People + Places + Needs + Capabilities + Authority + Resources → Outcomes. The core chain is Identity → Account → Participant → Relationship → Context → Capability → Authorization → Intent → Proposal → Action → Event → Evidence.";
+      if(l.includes("beatpay")) a="BeatPay coordinates authorized payments through regulated external rails. Palm or phone recognition is not payment authorization, and Zalagren does not claim a payment succeeded without authoritative provider evidence.";
+      else if(l.includes("opportunity")) a="BeatGenzi is Zalagren's opportunity-discovery capability. It can structure jobs, services, training, partnerships and other opportunities, but it never guarantees an outcome.";
+      else if(l.includes("community")) a="You can participate directly as a person or through community contexts such as TSAVO Royal Suburbs, Mi Vida Garden City and Qwetu Ruaraka. Community relationships do not replace your Zalagren identity.";
+      else if(l.includes("explain")||l.includes("zalagren")) a="Zalagren is an intelligent living infrastructure: People + Places + Needs + Capabilities + Authority + Resources → Outcomes. The core chain is Identity → Account → Participant → Relationship → Context → Capability → Authorization → Intent → Proposal → Action → Event → Evidence.";
       else a="I can help frame that as a need, intent or proposal. I will keep the distinction between recommendation, authorization and actual external execution explicit.";
-      messages.insertAdjacentHTML("beforeend",'<div class="message user"><b>You</b><p>'+esc(q)+'</p></div><div class="message assistant"><b>CONSTANTYNA</b><p>'+esc(a)+'</p></div>');messages.scrollIntoView({behavior:"smooth",block:"end"});
+      messages.insertAdjacentHTML("beforeend",'<div class="message user"><b>You</b><p>'+esc(q)+'</p></div><div class="message assistant"><b>CONSTANTYNA</b><p>'+esc(a)+'</p></div>');
+      messages.scrollTop=messages.scrollHeight;
     }
-    form.onsubmit=e=>{e.preventDefault();const q=input.value.trim();if(q){answer(q);input.value=""}};
-    document.querySelectorAll("[data-prompt]").forEach(b=>b.onclick=()=>{input.value=b.dataset.prompt;form.requestSubmit()});
+    form.onsubmit=e=>{e.preventDefault();const q=input.value.trim();if(q){answer(q);input.value="";}};
+    document.querySelectorAll("[data-prompt]").forEach(b=>b.onclick=()=>{input.value=b.dataset.prompt;form.requestSubmit();});
   }
-  function openLifecycle(){
-  const last=state.intents[state.intents.length-1];
-  if(!last){toast("Create a service intent first.");return}
-  const proposal=state.proposals.find(x=>x.intentId===last.id);
-  const action=state.actions.find(x=>x.intentId===last.id);
-  let html='<section class="section first"><span class="eyebrow dark">EXECUTION GATE</span><h1 class="page-title">Governed lifecycle</h1><p class="lead">Every consequential step is explicit. This web client cannot claim an external provider result without authoritative evidence.</p><div class="lifecycle-panel">';
-  html+='<div class="stage done"><b>1</b><strong>Intent</strong><small>Created</small></div>';
-  if(!proposal) html+='<button class="stage next" id="makeProposal"><b>2</b><strong>Proposal</strong><small>Create proposal</small></button>';
-  else html+='<div class="stage done"><b>2</b><strong>Proposal</strong><small>Created</small></div>';
-  if(proposal&&!proposal.authorized) html+='<button class="stage next" id="authorize"><b>3</b><strong>Authorization</strong><small>Participant approval</small></button>';
-  else if(proposal) html+='<div class="stage done"><b>3</b><strong>Authorization</strong><small>Authorized</small></div>';
-  if(proposal&&proposal.authorized&&!action) html+='<button class="stage next" id="execute"><b>4</b><strong>Action</strong><small>Execute platform action</small></button>';
-  else if(action) html+='<div class="stage done"><b>4</b><strong>Action</strong><small>Recorded</small></div>';
-  if(action&&!state.events.find(x=>x.actionId===action.id)) html+='<button class="stage next" id="event"><b>5</b><strong>Event</strong><small>Record result</small></button>';
-  else if(action) html+='<div class="stage done"><b>5</b><strong>Event</strong><small>Recorded</small></div>';
-  if(action&&state.events.find(x=>x.actionId===action.id)&&!state.evidence.find(x=>x.eventId===state.events.find(x=>x.actionId===action.id).id)) html+='<button class="stage next" id="evidence"><b>6</b><strong>Evidence</strong><small>Attach local evidence</small></button>';
-  else if(action) html+='<div class="stage done"><b>6</b><strong>Evidence</strong><small>Captured / pending external proof</small></div>';
-  html+='</div><div class="callout compact"><h3>Authorization is explicit.</h3><p>This prototype records the participant decision locally. It does not charge, book, dispatch or contact an external provider.</p></div><button class="btn darkbtn" id="backActivity">Back to activity</button></section>';
-  document.getElementById("app").innerHTML=html;
-  document.getElementById("makeProposal")?.addEventListener("click",()=>{state.proposals.push({id:"proposal-"+Date.now(),intentId:last.id,title:last.title+" proposal",detail:"Proposal created from participant intent; awaiting authorization.",authorized:false,created:Date.now()});save();openLifecycle()});
-  document.getElementById("authorize")?.addEventListener("click",()=>{const p=state.proposals.find(x=>x.intentId===last.id);p.authorized=true;p.authorizedAt=Date.now();p.detail="Participant explicitly authorized the proposed platform action.";save();openLifecycle()});
-  document.getElementById("execute")?.addEventListener("click",()=>{const p=state.proposals.find(x=>x.intentId===last.id);if(!p?.authorized){toast("Authorization required.");return}state.actions.push({id:"action-"+Date.now(),intentId:last.id,title:last.title+" action",detail:"Safe platform action recorded. No external provider execution occurred.",status:"RECORDED",created:Date.now()});save();openLifecycle()});
-  document.getElementById("event")?.addEventListener("click",()=>{const a=state.actions.find(x=>x.intentId===last.id);if(!a){toast("Action required.");return}state.events.push({id:"event-"+Date.now(),actionId:a.id,title:last.title+" event",detail:"Platform event recorded. External outcome remains unverified.",status:"RECORDED",created:Date.now()});save();openLifecycle()});
-  document.getElementById("evidence")?.addEventListener("click",()=>{const e=state.events.find(x=>x.actionId===state.actions.find(x=>x.intentId===last.id)?.id);if(!e){toast("Event required.");return}state.evidence.push({id:"evidence-"+Date.now(),eventId:e.id,title:last.title+" evidence",detail:"Local evidence record captured. No external provider proof is asserted.",status:"LOCAL",created:Date.now()});save();openLifecycle()});
-  document.getElementById("backActivity")?.addEventListener("click",()=>render("activity"));
-}
-function toast(msg){const t=document.getElementById("toast");if(!t)return;t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
-  render("home");
+
+  function toast(msg){const t=document.getElementById("toast");if(!t)return;t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600);}
+
+  function render(route){
+    closeMenu();
+    let content;
+    if(route.view==="intelligence")content=intelligence();
+    else if(route.view==="people")content=people();
+    else if(route.view==="community")content=community();
+    else if(route.view==="services")content=servicesView();
+    else if(route.view==="service")content=serviceDetail(Number(route.service));
+    else if(route.view==="activity")content=activity();
+    else if(route.view==="lifecycle")content=lifecycle();
+    else content=home();
+    shell(route,content,route.view==="service"||route.view==="lifecycle");
+    bind(route);
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+
+  window.addEventListener("popstate",()=>render(readRoute()));
+  const start=currentNavState();
+  if(!history.state?.zalagren) history.replaceState({zalagren:{idx:0,total:1}},"",location.pathname+"?view="+(new URLSearchParams(location.search).get("view")||"home"));
+  render(readRoute());
 })();
