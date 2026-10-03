@@ -1,7 +1,7 @@
 (() => {
   const state = JSON.parse(localStorage.getItem("zalagren-demo") || "null") || {
     participant: { name: "Demo Participant", mode: "PEOPLE", context: "Personal" },
-    intents: [], proposals: [], events: [], selectedCommunity: "TSAVO Royal Suburbs"
+    intents: [], proposals: [], actions: [], events: [], evidence: [], selectedCommunity: "TSAVO Royal Suburbs"
   };
   const communities = [
     {name:"TSAVO Royal Suburbs",place:"Roysambu, Nairobi",kind:"Residential community",note:"Evidence-backed instance; no invented residents or permissions."},
@@ -72,17 +72,22 @@
       '<div class="service-list">'+services.map((s,i)=>'<button class="service-row" data-service="'+i+'"><div class="service-icon">'+s[0].slice(0,1)+'</div><div class="service-copy"><strong>'+s[0]+'</strong><small>'+s[1]+'</small></div>'+badge(s[2])+'<span class="chev">›</span></button>').join("")+'</div><div id="serviceDetail"></div></section>';
   }
   function activity(){
-    const items=[...state.intents.map(x=>({...x,type:"INTENT"})),...state.proposals.map(x=>({...x,type:"PROPOSAL"})),...state.events.map(x=>({...x,type:"EVENT"}))].reverse();
+    const items=[...state.intents.map(x=>({...x,type:"INTENT"})),...state.proposals.map(x=>({...x,type:"PROPOSAL"})),...state.actions.map(x=>({...x,type:"ACTION"})),...state.events.map(x=>({...x,type:"EVENT"})),...state.evidence.map(x=>({...x,type:"EVIDENCE"}))].reverse();
     return '<section class="section first"><span class="eyebrow dark">ACTIVITY & EVIDENCE</span><h1 class="page-title">Nothing important disappears.</h1>'+
       '<div class="flow timeline">'+["Intent","Proposal","Authorization","Action","Event","Evidence"].map((x,i)=>'<span><b>'+String(i+1)+'</b>'+x+'</span>').join('<i>→</i>')+'</div>'+
-      '<div class="section-head"><h2>Participant activity</h2><p>Demo activity is stored locally on this device. External execution is never simulated as success.</p></div>'+
+      '<div class="section-head"><h2>Participant activity</h2><p>Platform state is persisted locally in this web client. External execution is never simulated as success.</p></div>'+
       (items.length?items.map(x=>'<div class="timeline-row"><span class="timeline-dot"></span><div><small>'+esc(x.type)+'</small><strong>'+esc(x.title)+'</strong><p>'+esc(x.detail||"")+'</p></div></div>').join(""):'<div class="empty">No activity yet. Create an intent from a service to begin the governed lifecycle.</div>')+
-      '<div class="callout compact"><h3>Evidence is the boundary of truth.</h3><p>An external provider must be authoritative before Zalagren records a real-world success.</p></div></section>';
+      '<div class="callout compact"><h3>Evidence is the boundary of truth.</h3><p>An external provider must be authoritative before Zalagren records a real-world success.</p></div><button class="btn darkbtn" id="lifecycleBtn">Open execution lifecycle</button></section>';
   }
   function serviceDetail(i){
     const s=services[i],el=document.getElementById("serviceDetail");if(!el)return;
     el.innerHTML='<div class="drawer"><div class="section-head"><div><span class="eyebrow dark">SERVICE</span><h2>'+esc(s[0])+'</h2></div>'+badge(s[2])+'</div><p>'+esc(s[1])+'</p><div class="lifecycle">'+["Need","Intent","Eligibility","Proposal","Authorization","Action","Event","Evidence"].map((x,n)=>'<span><b>'+String(n+1)+'</b>'+x+'</span>').join("")+'</div><button class="btn primary darkbtn" id="createIntent">Create intent</button><p class="micro">Creating an intent does not place an order, charge money, book a provider or authorize execution.</p></div>';
-    document.getElementById("createIntent").onclick=()=>{state.intents.push({title:s[0]+" request",detail:"Participant created a service intent; awaiting eligibility and proposal.",created:Date.now()});save();toast("Intent created — no external action was executed.");render("activity")};
+    document.getElementById("createIntent").onclick=()=>{
+  const id="intent-"+Date.now();
+  state.intents.push({id,title:s[0]+" request",detail:"Participant created a service intent; awaiting eligibility and proposal.",status:"CREATED",created:Date.now(),service:s[0]});
+  save(); toast("Intent created. No external action was executed."); render("activity");
+};
+
   }
   function render(view){
     const content=view==="ask"?ask():view==="people"?people():view==="community"?community():view==="services"?servicesView():view==="activity"?activity():home();
@@ -106,6 +111,32 @@
     form.onsubmit=e=>{e.preventDefault();const q=input.value.trim();if(q){answer(q);input.value=""}};
     document.querySelectorAll("[data-prompt]").forEach(b=>b.onclick=()=>{input.value=b.dataset.prompt;form.requestSubmit()});
   }
-  function toast(msg){const t=document.getElementById("toast");if(!t)return;t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
+  function openLifecycle(){
+  const last=state.intents[state.intents.length-1];
+  if(!last){toast("Create a service intent first.");return}
+  const proposal=state.proposals.find(x=>x.intentId===last.id);
+  const action=state.actions.find(x=>x.intentId===last.id);
+  let html='<section class="section first"><span class="eyebrow dark">EXECUTION GATE</span><h1 class="page-title">Governed lifecycle</h1><p class="lead">Every consequential step is explicit. This web client cannot claim an external provider result without authoritative evidence.</p><div class="lifecycle-panel">';
+  html+='<div class="stage done"><b>1</b><strong>Intent</strong><small>Created</small></div>';
+  if(!proposal) html+='<button class="stage next" id="makeProposal"><b>2</b><strong>Proposal</strong><small>Create proposal</small></button>';
+  else html+='<div class="stage done"><b>2</b><strong>Proposal</strong><small>Created</small></div>';
+  if(proposal&&!proposal.authorized) html+='<button class="stage next" id="authorize"><b>3</b><strong>Authorization</strong><small>Participant approval</small></button>';
+  else if(proposal) html+='<div class="stage done"><b>3</b><strong>Authorization</strong><small>Authorized</small></div>';
+  if(proposal&&proposal.authorized&&!action) html+='<button class="stage next" id="execute"><b>4</b><strong>Action</strong><small>Execute platform action</small></button>';
+  else if(action) html+='<div class="stage done"><b>4</b><strong>Action</strong><small>Recorded</small></div>';
+  if(action&&!state.events.find(x=>x.actionId===action.id)) html+='<button class="stage next" id="event"><b>5</b><strong>Event</strong><small>Record result</small></button>';
+  else if(action) html+='<div class="stage done"><b>5</b><strong>Event</strong><small>Recorded</small></div>';
+  if(action&&state.events.find(x=>x.actionId===action.id)&&!state.evidence.find(x=>x.eventId===state.events.find(x=>x.actionId===action.id).id)) html+='<button class="stage next" id="evidence"><b>6</b><strong>Evidence</strong><small>Attach local evidence</small></button>';
+  else if(action) html+='<div class="stage done"><b>6</b><strong>Evidence</strong><small>Captured / pending external proof</small></div>';
+  html+='</div><div class="callout compact"><h3>Authorization is explicit.</h3><p>This prototype records the participant decision locally. It does not charge, book, dispatch or contact an external provider.</p></div><button class="btn darkbtn" id="backActivity">Back to activity</button></section>';
+  document.getElementById("app").innerHTML=html;
+  document.getElementById("makeProposal")?.addEventListener("click",()=>{state.proposals.push({id:"proposal-"+Date.now(),intentId:last.id,title:last.title+" proposal",detail:"Proposal created from participant intent; awaiting authorization.",authorized:false,created:Date.now()});save();openLifecycle()});
+  document.getElementById("authorize")?.addEventListener("click",()=>{const p=state.proposals.find(x=>x.intentId===last.id);p.authorized=true;p.authorizedAt=Date.now();p.detail="Participant explicitly authorized the proposed platform action.";save();openLifecycle()});
+  document.getElementById("execute")?.addEventListener("click",()=>{const p=state.proposals.find(x=>x.intentId===last.id);if(!p?.authorized){toast("Authorization required.");return}state.actions.push({id:"action-"+Date.now(),intentId:last.id,title:last.title+" action",detail:"Safe platform action recorded. No external provider execution occurred.",status:"RECORDED",created:Date.now()});save();openLifecycle()});
+  document.getElementById("event")?.addEventListener("click",()=>{const a=state.actions.find(x=>x.intentId===last.id);if(!a){toast("Action required.");return}state.events.push({id:"event-"+Date.now(),actionId:a.id,title:last.title+" event",detail:"Platform event recorded. External outcome remains unverified.",status:"RECORDED",created:Date.now()});save();openLifecycle()});
+  document.getElementById("evidence")?.addEventListener("click",()=>{const e=state.events.find(x=>x.actionId===state.actions.find(x=>x.intentId===last.id)?.id);if(!e){toast("Event required.");return}state.evidence.push({id:"evidence-"+Date.now(),eventId:e.id,title:last.title+" evidence",detail:"Local evidence record captured. No external provider proof is asserted.",status:"LOCAL",created:Date.now()});save();openLifecycle()});
+  document.getElementById("backActivity")?.addEventListener("click",()=>render("activity"));
+}
+function toast(msg){const t=document.getElementById("toast");if(!t)return;t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
   render("home");
 })();
