@@ -7,3 +7,4 @@ export * from "./beatpay";
 export * from "./beatpay-provider";
 export * from "./beatpay-phone";
 export * from "./beatpay-authorization";
+export * from "./protected-services";
