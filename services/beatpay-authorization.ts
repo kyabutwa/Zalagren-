@@ -4,10 +4,30 @@ import type { Capability } from "../core/capability/capability";
 import type { Context } from "../core/context/context";
 import { createBeatPayIntent, type BeatPayPaymentIntent, type BeatPayRail, type BeatPayDirection } from "./beatpay";
 
+export interface BeatPayAuthorizationTerms {
+  authorizationId: string;
+  paymentIntentId: string;
+  participantId: string;
+  serviceId: string;
+  merchantId: string;
+  contextId: string;
+  amountMinor: number;
+  currency: string;
+}
+
+export interface BeatPayAuthorizationTermsResolver {
+  resolve(conditionsReference: string): Promise<BeatPayAuthorizationTerms | undefined>;
+}
+
 export type BeatPayAuthorizationGateReason =
   | AuthorizationCheck["reason"]
   | "SERVICE_MISMATCH"
   | "MERCHANT_MISMATCH"
+  | "PAYMENT_INTENT_MISMATCH"
+  | "AMOUNT_MISMATCH"
+  | "CURRENCY_MISMATCH"
+  | "CONDITIONS_REQUIRED"
+  | "CONDITIONS_UNAVAILABLE"
   | "INVALID_PAYMENT_REQUEST";
 
 export interface BeatPayAuthorizationGateRequest {
@@ -32,40 +52,30 @@ export interface BeatPayAuthorizationGateResult {
 }
 
 /**
- * BeatPay's hard authorization boundary.
- *
- * A biometric match is intentionally absent from this function: recognition can
- * identify a participant, but only Core authorization can permit a payment.
- * The authorization must bind the participant, capability, merchant target and
- * active context. The capability key must explicitly bind the payment to the
- * requested Zalagren service.
+ * Hard BeatPay boundary: biometric recognition is not an authorization input.
+ * Core authorization and its resolved payment conditions must match the request
+ * before a BeatPay payment intent can be created.
  */
-export function authorizeBeatPayPayment(
+export async function authorizeBeatPayPayment(
   request: BeatPayAuthorizationGateRequest,
   authorization: Authorization | undefined,
   capability: Capability,
-  context?: Context,
-): BeatPayAuthorizationGateResult {
+  context: Context | undefined,
+  termsResolver: BeatPayAuthorizationTermsResolver,
+): Promise<BeatPayAuthorizationGateResult> {
   if (
-    !request.participantId.trim() ||
-    !request.paymentIntentId.trim() ||
-    !request.serviceId.trim() ||
-    !request.merchantId.trim() ||
-    !request.capabilityId.trim() ||
-    !request.contextId.trim() ||
-    !Number.isSafeInteger(request.amountMinor) ||
-    request.amountMinor <= 0 ||
+    !request.participantId.trim() || !request.paymentIntentId.trim() ||
+    !request.serviceId.trim() || !request.merchantId.trim() ||
+    !request.capabilityId.trim() || !request.contextId.trim() ||
+    !Number.isSafeInteger(request.amountMinor) || request.amountMinor <= 0 ||
     !/^[A-Z]{3}$/.test(request.currency)
   ) {
     return { allowed: false, reason: "INVALID_PAYMENT_REQUEST" };
   }
+  if (!authorization) return { allowed: false, reason: "AUTHORIZATION_NOT_ACTIVE" };
+  if (!authorization.conditionsReference?.trim()) return { allowed: false, reason: "CONDITIONS_REQUIRED" };
 
-  if (!authorization) {
-    return { allowed: false, reason: "AUTHORIZATION_NOT_ACTIVE" };
-  }
-
-  const expectedCapabilityKey = `beatpay.payment.${request.serviceId}`;
-  if (capability.key !== expectedCapabilityKey) {
+  if (capability.key !== `beatpay.payment.${request.serviceId}`) {
     return { allowed: false, reason: "SERVICE_MISMATCH" };
   }
 
@@ -77,19 +87,21 @@ export function authorizeBeatPayPayment(
     contextId: request.contextId,
     at: request.at,
   };
-
   const check = evaluateAuthorization(authorizationRequest, authorization, capability, context);
-  if (!check.allowed) {
-    return { allowed: false, reason: check.reason };
-  }
+  if (!check.allowed) return { allowed: false, reason: check.reason };
 
-  if (authorization.targetEntityType !== "PROVIDER" || authorization.targetEntityId !== request.merchantId) {
-    return { allowed: false, reason: "MERCHANT_MISMATCH" };
-  }
+  const terms = await termsResolver.resolve(authorization.conditionsReference);
+  if (!terms) return { allowed: false, reason: "CONDITIONS_UNAVAILABLE" };
 
-  if (authorization.contextId !== request.contextId) {
-    return { allowed: false, reason: "CONTEXT_MISMATCH" };
+  if (terms.authorizationId !== authorization.id || terms.paymentIntentId !== request.paymentIntentId) {
+    return { allowed: false, reason: "PAYMENT_INTENT_MISMATCH" };
   }
+  if (terms.participantId !== request.participantId) return { allowed: false, reason: "PARTICIPANT_MISMATCH" };
+  if (terms.serviceId !== request.serviceId) return { allowed: false, reason: "SERVICE_MISMATCH" };
+  if (terms.merchantId !== request.merchantId) return { allowed: false, reason: "MERCHANT_MISMATCH" };
+  if (terms.contextId !== request.contextId) return { allowed: false, reason: "CONTEXT_MISMATCH" };
+  if (terms.amountMinor !== request.amountMinor) return { allowed: false, reason: "AMOUNT_MISMATCH" };
+  if (terms.currency !== request.currency) return { allowed: false, reason: "CURRENCY_MISMATCH" };
 
   const paymentIntent = createBeatPayIntent({
     id: request.paymentIntentId,
@@ -103,10 +115,5 @@ export function authorizeBeatPayPayment(
     createdAt: request.at,
   });
 
-  return {
-    allowed: true,
-    reason: "AUTHORIZED",
-    authorizationReference: authorization.id,
-    paymentIntent,
-  };
+  return { allowed: true, reason: "AUTHORIZED", authorizationReference: authorization.id, paymentIntent };
 }
