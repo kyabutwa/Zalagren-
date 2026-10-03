@@ -8,3 +8,4 @@ export * from "./context";
 export * from "./relationship";
 export * from "./governance";
 export * from "./multicontext";
+export * from "./coordination";
