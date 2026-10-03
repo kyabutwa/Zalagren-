@@ -34,7 +34,7 @@ jobs:
         working-directory: ios
         run: xcodegen generate --spec Zalagren.xcodegen.yml
 
-      - name: Build iOS app
+      - name: Build iOS simulator app
         working-directory: ios
         run: |
           xcodebuild \
@@ -45,3 +45,21 @@ jobs:
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             build
+
+      - name: Build iPhone device archive
+        working-directory: ios
+        run: |
+          xcodebuild \
+            -project Zalagren.xcodeproj \
+            -scheme Zalagren \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -configuration Release \
+            -archivePath build/Zalagren.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            archive
+
+      - name: Verify device archive
+        working-directory: ios
+        run: test -d build/Zalagren.xcarchive/Products/Applications/Zalagren.app
