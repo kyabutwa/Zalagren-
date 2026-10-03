@@ -1,0 +1,7 @@
+export type ProtectedServiceId="beatguardian"|"beatutilities";
+export interface ProtectedServiceDefinition { id:ProtectedServiceId; name:"BeatGuardian"|"BeatUtilities"; purpose:string; capabilities:readonly string[]; requiresProvider:boolean; requiresAuthorization:boolean; truthBoundary:string; status:"SUPPORTED"; }
+export const ZALAGREN_PROTECTED_SERVICES:readonly ProtectedServiceDefinition[]=[
+ {id:"beatguardian",name:"BeatGuardian",purpose:"Coordinate trusted check-ins, safety incidents and contextual assistance without replacing emergency authorities.",capabilities:["trusted-check-in","incident-coordination","contextual-safety","safety-evidence"],requiresProvider:false,requiresAuthorization:true,truthBoundary:"A coordination record is not proof that an emergency authority, responder or physical intervention occurred.",status:"SUPPORTED"},
+ {id:"beatutilities",name:"BeatUtilities",purpose:"Coordinate water, electricity, gas, energy, waste and connectivity requests against authoritative utility providers.",capabilities:["utility-account-reference","service-request","provider-status","utility-evidence"],requiresProvider:true,requiresAuthorization:true,truthBoundary:"A Zalagren request or status record does not replace the utility provider's authoritative service state, meter data or billing record.",status:"SUPPORTED"}
+];
+export function getProtectedService(id:ProtectedServiceId){return ZALAGREN_PROTECTED_SERVICES.find(service=>service.id===id);}
