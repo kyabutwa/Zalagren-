@@ -1,5 +1,6 @@
 import { createAuthorization } from "../core/authorization/authorization";
 import { createCapability } from "../core/capability/capability";
+import { createContext } from "../core/context/context";
 import { authorizeBeatPayPayment } from "../services/beatpay-authorization";
 
 const base = {
@@ -36,6 +37,7 @@ function fixture() {
     effectiveUntil: "2026-10-03T19:00:00.000Z",
     conditionsReference: "conditions-payment-1",
   });
+  const context = createContext({ id: base.contextId, contextType: "PAYMENT", participantId: base.participantId, startAt: "2026-10-03T17:00:00.000Z" });
   const termsResolver = {
     resolve: async (reference: string) =>
       reference === "conditions-payment-1"
@@ -51,7 +53,7 @@ function fixture() {
           }
         : undefined,
   };
-  return { capability, authorization, termsResolver };
+  return { capability, authorization, context, termsResolver };
 }
 
 test("valid Core authorization creates a BeatPay intent", async () => {
