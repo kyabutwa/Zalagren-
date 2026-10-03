@@ -57,79 +57,79 @@ function fixture() {
 }
 
 test("valid Core authorization creates a BeatPay intent", async () => {
-  const { capability, authorization, termsResolver } = fixture();
-  const result = await authorizeBeatPayPayment(base, authorization, capability, undefined, termsResolver);
+  const { capability, authorization, context, termsResolver } = fixture();
+  const result = await authorizeBeatPayPayment(base, authorization, capability, context, termsResolver);
   expect(result.allowed).toBe(true);
   expect(result.paymentIntent?.authorizationReference).toBe("authorization-1");
   expect(result.paymentIntent?.amountMinor).toBe(1500);
 });
 
 test("missing authorization is denied", async () => {
-  const { capability, termsResolver } = fixture();
-  expect((await authorizeBeatPayPayment(base, undefined, capability, undefined, termsResolver)).allowed).toBe(false);
+  const { capability, context, termsResolver } = fixture();
+  expect((await authorizeBeatPayPayment(base, undefined, capability, context, termsResolver)).allowed).toBe(false);
 });
 
 test("wrong participant is denied", async () => {
-  const { capability, authorization, termsResolver } = fixture();
-  expect((await authorizeBeatPayPayment({ ...base, participantId: "participant-2" }, authorization, capability, undefined, termsResolver)).reason)
+  const { capability, authorization, context, termsResolver } = fixture();
+  expect((await authorizeBeatPayPayment({ ...base, participantId: "participant-2" }, authorization, capability, context, termsResolver)).reason)
     .toBe("PARTICIPANT_MISMATCH");
 });
 
 test("wrong merchant is denied", async () => {
-  const { capability, authorization, termsResolver } = fixture();
-  expect((await authorizeBeatPayPayment({ ...base, merchantId: "provider-2" }, authorization, capability, undefined, termsResolver)).reason)
+  const { capability, authorization, context, termsResolver } = fixture();
+  expect((await authorizeBeatPayPayment({ ...base, merchantId: "provider-2" }, authorization, capability, context, termsResolver)).reason)
     .toBe("TARGET_MISMATCH");
 });
 
 test("wrong service is denied", async () => {
-  const { capability, authorization, termsResolver } = fixture();
-  expect((await authorizeBeatPayPayment({ ...base, serviceId: "ride" }, authorization, capability, undefined, termsResolver)).reason)
+  const { capability, authorization, context, termsResolver } = fixture();
+  expect((await authorizeBeatPayPayment({ ...base, serviceId: "ride" }, authorization, capability, context, termsResolver)).reason)
     .toBe("SERVICE_MISMATCH");
 });
 
 test("wrong amount is denied by Core-resolved payment terms", async () => {
-  const { capability, authorization, termsResolver } = fixture();
-  expect((await authorizeBeatPayPayment({ ...base, amountMinor: 2500 }, authorization, capability, undefined, termsResolver)).reason)
+  const { capability, authorization, context, termsResolver } = fixture();
+  expect((await authorizeBeatPayPayment({ ...base, amountMinor: 2500 }, authorization, capability, context, termsResolver)).reason)
     .toBe("AMOUNT_MISMATCH");
 });
 
 test("wrong currency is denied by Core-resolved payment terms", async () => {
-  const { capability, authorization, termsResolver } = fixture();
-  expect((await authorizeBeatPayPayment({ ...base, currency: "USD" }, authorization, capability, undefined, termsResolver)).reason)
+  const { capability, authorization, context, termsResolver } = fixture();
+  expect((await authorizeBeatPayPayment({ ...base, currency: "USD" }, authorization, capability, context, termsResolver)).reason)
     .toBe("CURRENCY_MISMATCH");
 });
 
 test("expired authorization is denied", async () => {
-  const { capability, authorization, termsResolver } = fixture();
-  expect((await authorizeBeatPayPayment({ ...base, at: "2026-10-03T20:00:00.000Z" }, authorization, capability, undefined, termsResolver)).reason)
+  const { capability, authorization, context, termsResolver } = fixture();
+  expect((await authorizeBeatPayPayment({ ...base, at: "2026-10-03T20:00:00.000Z" }, authorization, capability, context, termsResolver)).reason)
     .toBe("AUTHORIZATION_EXPIRED");
 });
 
 test("revoked authorization is denied", async () => {
-  const { capability, authorization, termsResolver } = fixture();
+  const { capability, authorization, context, termsResolver } = fixture();
   const revoked = { ...authorization, status: "REVOKED" as const, revokedAt: "2026-10-03T17:30:00.000Z" };
-  expect((await authorizeBeatPayPayment(base, revoked, capability, undefined, termsResolver)).reason).toBe("AUTHORIZATION_NOT_ACTIVE");
+  expect((await authorizeBeatPayPayment(base, revoked, capability, context, termsResolver)).reason).toBe("AUTHORIZATION_NOT_ACTIVE");
 });
 
 test("inactive capability is denied", async () => {
-  const { authorization, termsResolver } = fixture();
+  const { authorization, context, termsResolver } = fixture();
   const capability = {
     ...createCapability({ id: base.capabilityId, key: "beatpay.payment.food", name: "Pay for food" }),
     status: "INACTIVE" as const,
   };
-  expect((await authorizeBeatPayPayment(base, authorization, capability, undefined, termsResolver)).reason).toBe("CAPABILITY_INACTIVE");
+  expect((await authorizeBeatPayPayment(base, authorization, capability, context, termsResolver)).reason).toBe("CAPABILITY_INACTIVE");
 });
 
 test("missing payment conditions are denied", async () => {
-  const { capability, authorization, termsResolver } = fixture();
+  const { capability, authorization, context, termsResolver } = fixture();
   const withoutConditions = { ...authorization, conditionsReference: undefined };
-  expect((await authorizeBeatPayPayment(base, withoutConditions, capability, undefined, termsResolver)).reason)
+  expect((await authorizeBeatPayPayment(base, withoutConditions, capability, context, termsResolver)).reason)
     .toBe("CONDITIONS_REQUIRED");
 });
 
 test("palm recognition is not an authorization input", async () => {
-  const { capability, authorization, termsResolver } = fixture();
-  const result = await authorizeBeatPayPayment(base, authorization, capability, undefined, termsResolver);
+  const { capability, authorization, context, termsResolver } = fixture();
+  const result = await authorizeBeatPayPayment(base, authorization, capability, context, termsResolver);
   expect(result.allowed).toBe(true);
   expect(result.paymentIntent?.authorizationReference).toBe(authorization.id);
 });
