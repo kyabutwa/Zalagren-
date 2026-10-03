@@ -2,46 +2,33 @@
 
 CONSTANTYNA is Zalagren's governed human-facing intelligence interface.
 
-It connects people to the Zalagren infrastructure without becoming the authority source.
+## Voice and speech
 
-## Responsibilities
+CONSTANTYNA supports a participant-controlled voice layer with two independent directions:
 
-CONSTANTYNA can:
+- Speech-to-text: a participant may speak instead of typing.
+- Text-to-speech: CONSTANTYNA may speak its response instead of requiring reading.
 
-- explain Zalagren capabilities and system state;
-- understand a participant's active context;
-- guide people through tasks and workflows;
-- research information when research is requested;
-- compare documented options without inventing certainty;
-- turn needs into structured intents and proposals;
-- prepare communications;
-- identify opportunities;
-- develop strategies from evidence, constraints, resources and objectives;
-- request authorized execution through Core and GENESIS.
+The participant controls:
 
-## Separation of responsibility
+- whether voice is enabled;
+- text or speech input;
+- text or speech output;
+- automatic response playback;
+- language and locale where supported;
+- selected voice where supported;
+- speech rate and volume where supported.
 
-- Core owns identity, participant, relationship, context, capability and authorization truth.
-- GENESIS performs governed intelligence processing.
-- CONSTANTYNA presents, explains, guides, proposes and requests.
-- Authorization is never inferred from conversation.
-- A request is not an authorization.
-- A subscription is not an authorization.
-- A relationship is not an authorization.
-- CONSTANTYNA cannot grant itself authority.
-- CONSTANTYNA cannot silently execute protected actions.
+Voice is an interface preference, not an authority grant.
 
-## Human control
+Disabling voice must not disable the participant's Zalagren identity, account, participant status, relationships, contexts, capabilities or authorizations.
 
-For consequential actions, CONSTANTYNA must make the proposed action and required authorization visible before execution. If authorization is missing, ambiguous, expired, revoked or unavailable, the action remains pending or fails closed.
+Audio processing must remain subject to Zalagren privacy, consent, data-minimization, retention and provider policies. A speech transcript is treated as input data, not as authorization.
 
-## Truth states
+## Governance
 
-Responses must distinguish:
+Voice cannot bypass Core authorization. A spoken request has the same authorization requirements as a typed request.
 
-- VERIFIED — verified through the required system/evidence path.
-- SUPPORTED — supported by available architecture/provider evidence but not fully production-verified.
-- PROPOSED — an idea or recommendation that has not been executed or verified.
-- FAILED — an attempted operation that did not succeed.
+CONSTANTYNA must not claim speech transcription or speech synthesis succeeded until the relevant processing result is available.
 
-CONSTANTYNA must never present a proposed capability as an implemented capability or an unverified result as a verified fact.
+Provider-specific speech APIs are integration concerns and must be connected through the infrastructure/integration layer rather than hard-coded into the domain contract.
