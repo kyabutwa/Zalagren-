@@ -1,35 +1,46 @@
 # Services
 
-The Service domain turns a provider capability into an operationally describable service without granting authority.
+The Services domain contains the canonical Zalagren service catalog.
 
-## Canonical lifecycle
+These are **Zalagren service definitions**, not fabricated live provider listings. A definition becomes operational only when a real Provider, capability, eligibility, service area, availability, pricing and required authorization/evidence are connected.
 
-Need → Intent → Service Request → Eligibility → Proposal → Authorization → Scheduling → Work/Action → Event → Evidence → Resolution → Learning.
+## Initial service families
 
-## Service is not authority
+1. Home Cleaning
+2. Home Repair
+3. Laundry
+4. Food
+5. Mobility
+6. Property Maintenance
+7. Utilities Coordination
+8. Community Operations
+9. Opportunity Finder
+10. CONSTANTYNA
+11. GENESIS
 
-A Service does not itself grant access to a participant, Unit, Building, Community, funds, private data or protected operations.
+The catalog is infrastructure-first: Zalagren coordinates legitimate demand, providers, context and authority rather than pretending to own every underlying service.
 
-Provider status, capability, subscription, relationship and service availability are distinct from authorization.
+## Live-provider rule
 
-## Production requirements
+A service cannot be displayed as available merely because its definition exists.
 
-A service must be able to reference:
-- provider
-- capability
-- eligibility
-- qualifications
-- pricing/taxes
-- availability
-- service area
-- safety/legal requirements
-- cancellation/refund
-- evidence/disputes
-- data requirements
-- fulfilment mode
+Before a provider-facing service is operational, Zalagren must establish:
+- Provider identity
+- Provider status
+- Capability
+- Service area
+- Eligibility
+- Qualification evidence where relevant
+- Availability
+- Pricing/quote rules
+- Safety/legal requirements
+- Cancellation/refund rules
+- Data requirements
+- Authorization requirements
+- Execution and evidence workflow
 
-The current implementation stores references to those policies rather than pretending they have already been verified.
+## Kenya boundary
 
-## Kenya compliance boundary
+Zalagren must not represent itself as the regulated utility, medical provider, transport operator, financial institution, insurer, licensed professional or other regulated service provider unless the relevant legal and operational structure actually exists.
 
-Services that process personal data must be designed with purpose limitation, security, data-subject rights and applicable ODPC requirements in mind. Kenya's ODPC identifies property management, education, health, transport, financial services and other sectors with specific data-handling considerations. This domain does not by itself establish regulatory licensing or provider qualifications.
+Personal-data processing must follow applicable Kenyan data-protection requirements. ODPC states that organizations and individuals processing personal data can have registration obligations, subject to the statutory framework and exemptions.
