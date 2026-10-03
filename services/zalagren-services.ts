@@ -5,7 +5,9 @@ export type ZalagrenProductServiceId =
   | "beatgenzi"
   | "beatmarket"
   | "beatride"
-  | "beatbnb";
+  | "beatbnb"
+  | "beatguardian"
+  | "beatutilities";
 
 export interface ZalagrenProductService {
   id: ZalagrenProductServiceId;
@@ -97,6 +99,28 @@ export const ZALAGREN_PRODUCT_SERVICES: readonly ZalagrenProductService[] = [
     requiresProvider: true,
     requiresAuthorization: true,
     regulatoryBoundary: "Hosts and operators remain responsible for applicable accommodation, tax, safety, lease and local regulatory requirements.",
+    status: "SUPPORTED",
+  },
+  {
+    id: "beatguardian",
+    name: "BeatGuardian",
+    purpose: "Coordinate trusted check-ins, safety incidents and contextual assistance without replacing emergency authorities.",
+    category: "SAFETY",
+    capabilities: ["trusted-check-in", "incident-coordination", "contextual-safety", "safety-evidence"],
+    requiresProvider: false,
+    requiresAuthorization: true,
+    regulatoryBoundary: "A Zalagren coordination record is not proof that an emergency authority, responder or physical intervention occurred.",
+    status: "SUPPORTED",
+  },
+  {
+    id: "beatutilities",
+    name: "BeatUtilities",
+    purpose: "Coordinate water, electricity, gas, waste, energy and connectivity workflows against authoritative providers.",
+    category: "UTILITIES",
+    capabilities: ["utility-account-reference", "service-request", "provider-status", "utility-evidence"],
+    requiresProvider: true,
+    requiresAuthorization: true,
+    regulatoryBoundary: "Utility providers remain authoritative for service state, meter data, billing and regulated obligations.",
     status: "SUPPORTED",
   },
 ];
