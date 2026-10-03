@@ -3,7 +3,27 @@ import {
   ZALAGREN_PRODUCT_SERVICES,
 } from "../services/zalagren-services";
 
-if (ZALAGREN_PRODUCT_SERVICES.length !== 7) throw new Error("Beat service family must contain exactly seven services");
+const requiredServices = [
+  "beatpay",
+  "beatfood",
+  "beathealth",
+  "beatgenzi",
+  "beatmarket",
+  "beatride",
+  "beatbnb",
+  "beatguardian",
+  "beatutilities",
+] as const;
+
+if (ZALAGREN_PRODUCT_SERVICES.length !== requiredServices.length) {
+  throw new Error("Beat service catalog is incomplete");
+}
+
+for (const id of requiredServices) {
+  if (!getZalagrenProductService(id)) {
+    throw new Error(`Required Beat service missing: ${id}`);
+  }
+}
 
 for (const service of ZALAGREN_PRODUCT_SERVICES) {
   if (!service.id || !service.name || !service.purpose) throw new Error("Beat service definition incomplete");
