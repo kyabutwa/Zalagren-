@@ -1,0 +1,16 @@
+import {applyBeatPayCallback,assertNoPaymentSecret,createBeatPayIntent,transitionBeatPayIntent,type BeatPayEventStore} from "../services/beatpay";
+const intent=createBeatPayIntent({id:"pay-1",participantId:"participant-1",direction:"COLLECTION",rail:"M_PESA",amountMinor:15000,currency:"KES",merchantReference:"REQ-1",authorizationReference:"auth-1",createdAt:"2026-10-03T10:00:00.000Z"});
+if(intent.status!=="CREATED")throw new Error("BeatPay intent must start as CREATED");
+const submitted=transitionBeatPayIntent(intent,"SUBMITTED","2026-10-03T10:01:00.000Z",{providerReference:"provider-1"});
+const recorded=new Set<string>();
+const store:BeatPayEventStore={async hasEvent(id){return recorded.has(id)},async recordEvent(id){recorded.add(id)}};
+const callback={eventId:"event-1",providerReference:"provider-1",merchantReference:"REQ-1",status:"SUCCEEDED" as const,amountMinor:15000,currency:"KES",externalReceipt:"receipt-1",occurredAt:"2026-10-03T10:02:00.000Z"};
+const applied=await applyBeatPayCallback(submitted,callback,store);
+if(!applied.result.accepted||applied.intent?.status!=="SUCCEEDED")throw new Error("Authoritative BeatPay callback should succeed");
+const duplicate=await applyBeatPayCallback(submitted,callback,store);
+if(duplicate.result.reason!=="DUPLICATE")throw new Error("BeatPay callbacks must be idempotent");
+const mismatch=await applyBeatPayCallback(submitted,{...callback,eventId:"event-2",amountMinor:15001},store);
+if(mismatch.result.reason!=="AMOUNT_MISMATCH")throw new Error("BeatPay amount mismatch must fail closed");
+let invalid=false;try{transitionBeatPayIntent(applied.intent!,"PENDING")}catch{invalid=true}if(!invalid)throw new Error("BeatPay terminal transition must fail");
+let secret=false;try{assertNoPaymentSecret({token:"forbidden"})}catch{secret=true}if(!secret)throw new Error("BeatPay must reject secret-bearing domain objects");
+console.log("BeatPay tests passed");
