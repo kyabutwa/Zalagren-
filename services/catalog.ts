@@ -11,7 +11,8 @@ export type ZalagrenServiceCategory =
   | "SECURITY"
   | "PROFESSIONAL"
   | "COMMUNITY"
-  | "OPPORTUNITY";
+  | "OPPORTUNITY"
+  | "SAFETY";
 
 export interface ZalagrenServiceDefinition {
   id: string;
@@ -145,6 +146,30 @@ export const ZALAGREN_SERVICE_CATALOG: readonly ZalagrenServiceDefinition[] = [
     requiresProvider: false,
     requiresAuthorization: false,
     paymentMode: "SUBSCRIPTION",
+    status: "READY_FOR_PROVIDER",
+  },
+  {
+    id: "service-beatguardian",
+    name: "BeatGuardian",
+    category: "SAFETY",
+    description: "Coordinate trusted check-ins and contextual incident workflows without replacing emergency authorities.",
+    value: "Give participants a governed safety-coordination layer with attributable evidence.",
+    fulfilmentModes: ["REMOTE", "ON_SITE", "HYBRID"],
+    requiresProvider: false,
+    requiresAuthorization: true,
+    paymentMode: "NONE",
+    status: "READY_FOR_PROVIDER",
+  },
+  {
+    id: "service-beatutilities",
+    name: "BeatUtilities",
+    category: "UTILITIES",
+    description: "Coordinate utility requests and provider status for water, electricity, gas, waste, energy and connectivity.",
+    value: "Connect participant and community needs to authoritative utility providers.",
+    fulfilmentModes: ["REMOTE", "ON_SITE", "HYBRID"],
+    requiresProvider: true,
+    requiresAuthorization: true,
+    paymentMode: "METERED",
     status: "READY_FOR_PROVIDER",
   },
   {
