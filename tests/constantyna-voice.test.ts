@@ -80,3 +80,4 @@ describe("CONSTANTYNA voice and speech", () => {
     expect(input.status).toBe("READY");
     expect(output.status).toBe("GENERATED");
   });
+});
