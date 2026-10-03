@@ -49,7 +49,7 @@
   ];
   const titles = {
     home:"Home", intelligence:"Intelligence", people:"People", community:"Community",
-    services:"Services", activity:"Activity", lifecycle:"Execution", service:"Service"
+    services:"Services", activity:"Activity", lifecycle:"Execution", service:"Service", foundation:"Foundation", security:"Security", ecosystem:"Ecosystem"
   };
 
   function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
