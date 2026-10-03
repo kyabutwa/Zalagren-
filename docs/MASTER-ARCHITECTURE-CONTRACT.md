@@ -96,7 +96,7 @@ Community membership is not required for basic Zalagren participation.
 
 ## 10. Community-First Entry
 
-A community or organization can adopt Zalagren and manage its authorized domain, including people, residents, owners, workers, visitors, properties, buildings, apartments/units, places, organizations, providers, services, resources, utilities, requests, work, governance, events and evidence.
+A community or organization can adopt Zalagren and manage its authorized domain, including people, residents, owners, workers, visitors, properties, buildings, units, places, organizations, providers, services, resources, utilities, requests, work, governance, events and evidence.
 
 A community does not own a person's global Zalagren identity.
 
@@ -105,7 +105,7 @@ A community does not own a person's global Zalagren identity.
 Communities are first-class entities. Possible forms include residential communities, estates, apartments, buildings, small cities, organizations, institutions, campuses and managed environments.
 
 Canonical community graph:
-> Community → Real Estate → Property → Building → Apartment/Unit → Place
+> Community → Real Estate → Property → Building → Unit → Place
 
 and:
 > Community → People / Organizations / Providers / Services / Resources / Utilities / Requests / Work / Governance / Events / Evidence
@@ -147,7 +147,7 @@ Zalagren services follow:
 > Need → Intent → Request → Proposal → Authorization → Work/Action → Event → Evidence → Resolution → Learning
 
 Example:
-> Participant → Apartment → Utility → Incident → Provider → Work Order → Worker → Authorization → Action → Evidence → Resolution
+> Participant → Unit → Utility → Incident → Provider → Work Order → Worker → Authorization → Action → Evidence → Resolution
 
 Services must expose truthful operational state. No fake completion.
 
