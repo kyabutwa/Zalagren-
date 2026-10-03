@@ -3,71 +3,56 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject private var model: ZalagrenAppModel
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+        VStack(spacing: 18) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Zalagren").font(.caption.weight(.semibold)).foregroundStyle(ZalagrenTheme.green)
+                    Text("Good to see you.").font(.largeTitle.bold())
+                }
+                Spacer()
                 Menu {
                     ForEach(model.contexts, id: \.self) { context in
                         Button(context) { model.activeContext = context }
                     }
-                } label: {
-                    Label(model.activeContext, systemImage: "scope")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(ZalagrenTheme.navy)
-                }
-
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Good to see you.").font(.largeTitle.bold())
-                    Text("People, places, needs, capabilities and authorized possibilities in one Zalagren experience.")
-                        .foregroundStyle(.secondary)
-                }
-
-                Button { model.assistantPresented = true } label: {
-                    HStack(spacing: 14) {
-                        Image(systemName: "sparkles").font(.title2).foregroundStyle(ZalagrenTheme.tsavoOrange)
-                        VStack(alignment: .leading) {
-                            Text("Ask Zalagren").font(.headline)
-                            Text("Explain • research • compare • propose • guide")
-                                .font(.subheadline).foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right").foregroundStyle(.secondary)
-                    }
-                    .zalagrenCard()
-                }
-                .buttonStyle(.plain)
-
-                Text("Your world").font(.title3.bold())
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                    tile("People", "person.2", .people)
-                    tile("Communities", "building.2", .community)
-                    tile("Activity", "clock.arrow.circlepath", .activity)
-                    tile("Settings", "gearshape", .settings)
-                }
-
-                Text("Useful possibilities").font(.title3.bold())
-                HStack(alignment: .top, spacing: 14) {
-                    Image(systemName: "sparkles").foregroundStyle(ZalagrenTheme.tsavoOrange)
-                    VStack(alignment: .leading) {
-                        Text("Find an opportunity").font(.headline)
-                        Text("Jobs, services, partnerships, community needs and useful next steps.")
-                            .font(.subheadline).foregroundStyle(.secondary)
-                    }
-                }
-                .zalagrenCard()
+                } label: { Label(model.activeContext, systemImage: "scope").font(.subheadline.weight(.semibold)) }
+                .foregroundStyle(ZalagrenTheme.navy)
             }
-            .padding()
+            HStack(spacing: 12) {
+                HomeAction(title: "Ask", subtitle: "CONSTANTYNA", symbol: "sparkles", color: ZalagrenTheme.tsavoOrange) { model.assistantPresented = true }
+                HomeAction(title: "People", subtitle: "Participants", symbol: "person.2", color: ZalagrenTheme.navy) { model.select(.people) }
+                HomeAction(title: "Community", subtitle: "Places & services", symbol: "building.2", color: ZalagrenTheme.navy) { model.select(.community) }
+            }
+            HStack(spacing: 12) {
+                CompactAction(title: "Opportunity", symbol: "arrow.up.right") { model.assistantPresented = true }
+                CompactAction(title: "Activity", symbol: "clock.arrow.circlepath") { model.select(.activity) }
+                CompactAction(title: "Settings", symbol: "gearshape") { model.select(.settings) }
+            }
+            Spacer(minLength: 0)
         }
+        .padding()
+        .frame(maxWidth: 760, maxHeight: .infinity, alignment: .top)
     }
-
-    private func tile(_ title: String, _ symbol: String, _ destination: ZalagrenAppModel.Destination) -> some View {
-        Button { model.select(destination) } label: {
+}
+private struct HomeAction: View {
+    let title: String; let subtitle: String; let symbol: String; let color: Color; let action: () -> Void
+    var body: some View {
+        Button(action: action) {
             VStack(alignment: .leading, spacing: 12) {
-                Image(systemName: symbol).font(.title2).foregroundStyle(ZalagrenTheme.navy)
-                Text(title).font(.headline).foregroundStyle(.primary)
+                Image(systemName: symbol).font(.title2).foregroundStyle(color)
+                Spacer()
+                Text(title).font(.headline)
+                Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(2)
             }
-            .frame(maxWidth: .infinity, minHeight: 100, alignment: .leading)
+            .frame(maxWidth: .infinity, minHeight: 132, alignment: .leading)
             .zalagrenCard()
-        }
-        .buttonStyle(.plain)
+        }.buttonStyle(.plain)
+    }
+}
+private struct CompactAction: View {
+    let title: String; let symbol: String; let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            Label(title, systemImage: symbol).font(.subheadline.weight(.medium)).frame(maxWidth: .infinity, minHeight: 48)
+        }.buttonStyle(.bordered)
     }
 }
