@@ -6,7 +6,7 @@ export type VerificationChannel = "EMAIL" | "PHONE" | "IDENTITY_DOCUMENT";
 export type VerificationChallengeStatus = "PENDING" | "VERIFIED" | "FAILED" | "EXPIRED" | "SUPERSEDED";
 
 export interface AuthenticationMethod { id:string; accountId:string; kind:AuthenticationMethodKind; status:AuthenticationMethodStatus; enrolledAt:string; lastUsedAt?:string; revokedAt?:string; }
-export interface Device { id:string; accountId:string; label:string; status:DeviceStatus; firstSeenAt:string; lastSeenAt:string; revokedAt?:string; }
+export interface SecurityDevice { id:string; accountId:string; label:string; status:DeviceStatus; firstSeenAt:string; lastSeenAt:string; revokedAt?:string; }
 export interface VerificationChallenge { id:string; accountId:string; identityId:string; channel:VerificationChannel; targetReference:string; status:VerificationChallengeStatus; requestedAt:string; expiresAt:string; attemptCount:number; providerReference?:string; lastErrorCode?:string; }
 export interface SecurityPosture { accountId:string; assurance:AssuranceLevel; requiresReauthentication:boolean; compromised:boolean; activeAuthenticationMethods:number; trustedDevices:number; }
 
