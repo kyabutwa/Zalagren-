@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "strict": true,
-    "noEmit": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "noEmitOnError": true,
     "skipLibCheck": true
   },
   "include": [
@@ -17,5 +19,6 @@
     "intelligence/**/*.ts",
     "services/**/*.ts",
     "tests/**/*.ts"
-  ]
+  ],
+  "exclude": ["dist", "node_modules"]
 }
