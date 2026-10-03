@@ -1,24 +1,39 @@
 name: Zalagren Web
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 permissions:
   contents: read
-  pages: write
-  id-token: write
+
 concurrency:
-  group: pages
+  group: web-validation
   cancel-in-progress: true
+
 jobs:
-  deploy:
+  validate:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./web
-      - uses: actions/deploy-pages@v4
+
+      - name: Validate web surface
+        run: |
+          test -f web/index.html
+          test -f web/styles.css
+          test -f web/app.js
+          grep -q '<link rel="stylesheet" href="styles.css">' web/index.html
+          grep -q '<script src="app.js"></script>' web/index.html
+          grep -q 'Zalagren' web/index.html
+          grep -q 'CONSTANTYNA' web/index.html
+          grep -q 'GENESIS' web/index.html
+          grep -q 'BeatPay' web/index.html
+          grep -q 'TSAVO' web/index.html
+          grep -q 'Mi Vida' web/index.html
+          grep -q 'Qwetu' web/index.html
+          echo "Web surface validation passed."
+
+      - name: Validate no placeholder deployment claims
+        run: |
+          ! grep -RniE 'fake success|payment successful|booking confirmed|provider connected' web
