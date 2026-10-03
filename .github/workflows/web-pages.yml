@@ -7,14 +7,19 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: web-validation
+  group: pages
   cancel-in-progress: true
 
 jobs:
-  validate:
+  deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,8 +37,17 @@ jobs:
           grep -q 'TSAVO' web/index.html
           grep -q 'Mi Vida' web/index.html
           grep -q 'Qwetu' web/index.html
-          echo "Web surface validation passed."
 
-      - name: Validate no placeholder deployment claims
+      - name: Validate no fabricated deployment claims
         run: |
           ! grep -RniE 'fake success|payment successful|booking confirmed|provider connected' web
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./web
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
