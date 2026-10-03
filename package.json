@@ -6,7 +6,7 @@
     "clean": "rm -rf dist",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "npm run build && jest --runInBand dist/tests"
+    "test": "npm run build && jest --runInBand --setupFilesAfterEnv=dist/tests/jest.setup.js dist/tests"
   },
   "devDependencies": {
     "typescript": "^5.9.0",
