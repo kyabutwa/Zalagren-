@@ -5,3 +5,4 @@ export * from "./catalog";
 export * from "./zalagren-services";
 export * from "./beatpay";
 export * from "./beatpay-provider";
+export * from "./beatpay-phone";
