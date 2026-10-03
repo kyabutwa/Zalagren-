@@ -12,3 +12,4 @@ export * from "./coordination";
 export * from "./intelligence";
 export * from "./security/security";
 export * from "./participant-operations/operations";
+export * from "./beatone-migration";
