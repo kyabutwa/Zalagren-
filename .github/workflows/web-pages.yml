@@ -95,7 +95,10 @@ jobs:
           file web/assets/*.png
           identify -format '%f %wx%h %[channels]\n' web/assets/*.png | tee /tmp/assets.txt
           grep -q 'srgba' /tmp/assets.txt
-          test "$(identify -format '%[opaque]' web/assets/IMG_1505.png)" = 'False'
+          opaque="$(identify -format '%[opaque]' web/assets/IMG_1505.png | tr '[:upper:]' '[:lower:]')"
+          test "$opaque" = 'false'
+          alpha_min="$(convert web/assets/IMG_1505.png -alpha extract -format '%[min]' info:)"
+          test "$alpha_min" = '0'
 
       - uses: actions/configure-pages@v5
 
