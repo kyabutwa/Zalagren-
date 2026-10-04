@@ -50,7 +50,7 @@
   ];
   const titles = {
     home:"Home", intelligence:"Intelligence", people:"People", community:"Community",
-    services:"Services", activity:"Activity", lifecycle:"Execution", service:"Service", foundation:"Foundation", security:"Security", ecosystem:"Ecosystem"
+    services:"Services", activity:"Activity", lifecycle:"Execution", service:"Service", foundation:"Foundation", security:"Security", ecosystem:"Ecosystem", settings:"Settings"
   };
 
   function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
@@ -97,7 +97,7 @@
       '<div id="toast" class="toast"></div><div id="sheet" class="sheet" hidden></div>';
     document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.view)));
     document.getElementById("menuBtn").onclick=openMenu;
-    document.getElementById("accountBtn").onclick=()=>navigate("people");
+    document.getElementById("accountBtn").onclick=()=>navigate("settings");
   }
 
 function foundationPage(){
@@ -204,15 +204,27 @@ function intelligence(){
     return html;
   }
 
+  function settings(){
+    const rows=[
+      ["Account","Your single Zalagren account and participant boundary."],
+      ["Identity","Legal / verified identity and verification state."],
+      ["Security & access","Authentication, devices, sessions and authorization controls."],
+      ["Privacy & data","Purpose, sharing, retention, deletion and export."],
+      ["Notifications","Participant-controlled alerts and activity preferences."],
+      ["Voice & intelligence","CONSTANTYNA voice input/output and intelligence preferences."],
+      ["Appearance","Interface density, motion and display preferences."],
+      ["Communities","Your community relationships and active contexts."],
+      ["Services & entitlements","Available capabilities and participation plans."]
+    ];
+    return '<section class="section first"><span class="eyebrow dark">MY ZALAGREN</span><h1 class="page-title">One place for your Zalagren settings.</h1><p class="lead">Account, identity, access, privacy, intelligence and participation controls belong to one settings surface. A setting changes preference or configuration; it never silently grants authorization.</p><div class="settings-list">'+rows.map(x=>'<button class="settings-row"><span><strong>'+x[0]+'</strong><small>'+x[1]+'</small></span><b>›</b></button>').join('')+'</div><div class="callout compact"><h3>Authority stays separate.</h3><p>Authentication, subscription, relationship and preference settings never become consequential authorization by themselves.</p></div></section>';
+  }
+
   function openMenu(){
     const s=document.getElementById("sheet");
     s.hidden=false;
     s.innerHTML='<div class="sheet-backdrop" id="sheetClose"></div><div class="sheet-panel"><div class="sheet-grabber"></div><div class="section-head"><div><span class="eyebrow dark">ZALAGREN</span><h2>Menu</h2></div><button class="close" id="sheetCloseBtn">×</button></div>'+
-      '<button class="menu-row" data-route="foundation"><strong>Platform foundation</strong><span>Identity, account, participant, places, organizations</span>›</button><button class="menu-row" data-route="ecosystem"><strong>Full ecosystem map</strong><span>All domains and uploaded artwork</span>›</button><button class="menu-row" data-route="people"><strong>Participant & contexts</strong><span>Identity, relationships and context</span>›</button>'+
-      '<button class="menu-row" data-route="activity"><strong>Activity & evidence</strong><span>Trace governed lifecycle</span>›</button><button class="menu-row" data-route="security"><strong>Security & trust</strong><span>Authorization, privacy and failure states</span>›</button>'+
-      '<div class="menu-row static"><strong>Voice preferences</strong><span>Participant-controlled; integration status is not simulated.</span></div>'+
-      '<div class="menu-row static"><strong>Privacy</strong><span>Minimum necessary information, explicit sharing and auditable state.</span></div></div>';
-    document.getElementById("sheetClose").onclick=closeMenu;
+      '<button class="menu-row" data-route="foundation"><strong>Platform foundation</strong><span>Identity, account, participant, places, organizations</span>›</button><button class="menu-row" data-route="ecosystem"><strong>Full ecosystem map</strong><span>People, communities, services and intelligence</span>›</button><button class="menu-row" data-route="people"><strong>Participant & contexts</strong><span>Relationships and active context</span>›</button>'+
+      '<button class="menu-row" data-route="services"><strong>Services</strong><span>Needs, capabilities and governed outcomes</span>›</button><button class="menu-row" data-route="activity"><strong>Activity & evidence</strong><span>Trace the governed lifecycle</span>›</button><button class="menu-row" data-route="security"><strong>Security & trust</strong><span>Authorization, privacy and failure states</span>›</button><button class="menu-row" data-route="settings"><strong>My Zalagren settings</strong><span>One home for account, identity, privacy, voice and preferences</span>›</button></div>';    document.getElementById("sheetClose").onclick=closeMenu;
     document.getElementById("sheetCloseBtn").onclick=closeMenu;
     s.querySelectorAll("[data-route]").forEach(b=>b.onclick=()=>{closeMenu();navigate(b.dataset.route);});
   }
@@ -275,6 +287,7 @@ function intelligence(){
     else if(route.view==="ecosystem")content=ecosystemPage();
     else if(route.view==="foundation")content=foundationPage();
     else if(route.view==="security")content=securityPage();
+    else if(route.view==="settings")content=settings();
     else if(route.view==="community")content=community();
     else if(route.view==="services")content=servicesView();
     else if(route.view==="service")content=serviceDetail(Number(route.service));
