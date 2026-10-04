@@ -47,12 +47,11 @@ jobs:
           grep -q 'foundationPage' web/app.js
           grep -q 'securityPage' web/app.js
           grep -q 'ecosystemPage' web/app.js
-          grep -q 'assets/IMG_1505.png' web/app.js
+          grep -q 'assets/IMG_1510.png' web/app.js
           grep -q 'assets/IMG_1507.png' web/app.js
           grep -q 'assets/IMG_1508.png' web/app.js
           grep -q 'assets/IMG_1509.png' web/app.js
-          grep -q 'assets/IMG_1505.png' web/app.js
-          grep -q 'function settings()' web/app.js
+          grep -q 'function settings()' web/app.js web/app.js
           node --check web/app.js
           test -f docs/WEB-ARTWORK-MAP.md
 
@@ -77,8 +76,8 @@ jobs:
       - name: Prepare uploaded image assets
         run: |
           mkdir -p web/assets
-          # IMG_1505 is the canonical Zalagren logo. Keep the original JPEG untouched;
-          # only the deployed derivative gets its connected background made transparent.
+          # IMG_1510 is the canonical Zalagren wordmark used in the global bar. Keep the original JPEG untouched;
+          # IMG_1505 remains the identity/access source artwork; only deployed derivatives are generated.
           convert IMG_1505.jpeg -alpha on -fuzz 8% -fill none -draw "color 0,0 floodfill" -strip web/assets/IMG_1505.png
 
           # Other uploaded artwork may use the transparent derivative pipeline.
