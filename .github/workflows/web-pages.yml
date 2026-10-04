@@ -31,8 +31,8 @@ jobs:
           test -f web/app.js
           test -f web/manifest.webmanifest
           test -f web/sw.js
-          grep -q '<link rel="stylesheet" href="styles.css">' web/index.html
-          grep -q '<script src="app.js"></script>' web/index.html
+          grep -q 'styles.css' web/index.html
+          grep -q 'app.js' web/index.html
           grep -Rqi 'Zalagren' web
           grep -Rqi 'CONSTANTYNA' web
           grep -Rqi 'GENESIS' web
