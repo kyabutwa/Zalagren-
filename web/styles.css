@@ -179,3 +179,52 @@ input::placeholder,textarea::placeholder{color:#53657a!important;-webkit-text-fi
 .settings-row strong{font-size:16px;color:var(--white)!important;font-weight:650}
 .settings-row small{margin-top:4px;color:var(--muted)!important;font-size:12px;line-height:18px}
 .settings-row b{color:var(--green)!important;font-size:22px;font-weight:400}
+
+
+/* SERVICENOW-INSPIRED ZALAGREN WORKSPACE CONTRACT
+   Adopted patterns: focused workspace, contextual orientation, persistent shell,
+   reusable data-driven surfaces, clear task hierarchy. Never copy ServiceNow branding. */
+.workspacebar{
+  height:38px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 14px;border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(7,26,51,.96);color:#fff;overflow:hidden
+}
+.workspace-context,.workspace-search{
+  border:0;background:transparent;color:#fff;min-width:0;font:inherit
+}
+.workspace-context{display:flex;align-items:center;gap:7px;padding:0;cursor:pointer;font-size:11px}
+.workspace-context strong{font-weight:750;color:#fff}
+.workspace-context>span:not(.workspace-pulse){color:#b8c8d9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.workspace-separator{opacity:.5}
+.workspace-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(99,212,135,.1);flex:none}
+.workspace-search{font-size:11px;color:#b8c8d9;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:5px 8px;cursor:pointer;white-space:nowrap}
+.workspace-search kbd{font-size:9px;color:#fff;opacity:.65;margin-left:5px}
+.workspace-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.workspace-status{font-size:9px;letter-spacing:.12em;font-weight:800;color:var(--green);white-space:nowrap;padding-top:8px}
+.workspace-status i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:5px}
+.workspace-grid{margin-top:26px!important}
+.workspace-card{min-height:150px;padding:20px 0!important;text-align:left}
+.workspace-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.workspace-card strong{font-size:20px!important;letter-spacing:-.02em}
+.workspace-card>span:last-child{display:block;max-width:620px}
+.menu-brand{display:flex;align-items:center;gap:12px;padding:8px 2px 18px;border-bottom:1px solid var(--line)}
+.menu-brand img{width:78px;height:30px;object-fit:contain;display:block}
+.menu-brand small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.service-state{display:block}
+.service-symbol{display:grid;place-items:center;width:100%;height:100%;font-size:22px;font-weight:800;color:var(--green)}
+.service-identity-header{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+.service-identity-header .page-title{margin-bottom:0!important}
+.service-identity-mark{width:66px;height:66px;border-radius:17px;border:1px solid var(--line);background:rgba(99,212,135,.08);display:grid;place-items:center;overflow:hidden;flex:none}
+.service-identity-mark img{width:100%;height:100%;object-fit:contain;padding:5px}
+.service-symbol-mark{font-size:28px;color:var(--green)}
+@media(max-width:700px){
+ .workspacebar{padding:0 12px}.workspace-search{font-size:0;width:28px;height:26px;padding:0;display:grid;place-items:center}
+ .workspace-search::before{content:"⌕";font-size:17px;color:#fff}.workspace-search kbd{display:none}
+ .workspace-context{max-width:calc(100vw - 74px)}
+ .workspace-context>span:last-child{display:none}
+ .workspace-heading{display:block}.workspace-status{display:block;padding-top:10px}
+ .workspace-card{min-height:0}
+ .service-state{display:none}
+ .service-identity-header{align-items:flex-start}.service-identity-mark{width:58px;height:58px}
+ .menu-brand img{width:84px;height:32px}
+}
