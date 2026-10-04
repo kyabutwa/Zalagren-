@@ -37,3 +37,9 @@ Before native iOS distribution spending:
 4. Core navigation and ecosystem sections are readable.
 5. Mobile layout has no intentional horizontal page overflow.
 6. No fake production state is presented.
+
+
+## 2026-10-04 visual contract
+- Canonical header logo: IMG_1505 only.
+- Navy canvas uses white text; green is reserved for orientation/titles/status accents.
+- White surfaces use Zalagren navy text.
