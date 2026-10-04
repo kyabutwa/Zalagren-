@@ -53,6 +53,7 @@ jobs:
           grep -q 'assets/IMG_1509.png' web/app.js
           grep -q 'assets/IMG_1505.png' web/app.js
           grep -q 'function settings()' web/app.js
+          node --check web/app.js
           grep -q 'assets/IMG_1510.png' web/app.js
           test -f docs/WEB-ARTWORK-MAP.md
 
@@ -94,6 +95,7 @@ jobs:
           file web/assets/*.png
           identify -format '%f %wx%h %[channels]\n' web/assets/*.png | tee /tmp/assets.txt
           grep -q 'srgba' /tmp/assets.txt
+          test "$(identify -format '%[opaque]' web/assets/IMG_1505.png)" = 'False'
 
       - uses: actions/configure-pages@v5
 
