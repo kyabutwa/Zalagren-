@@ -1,120 +1,21 @@
-(() => {
-  const KEY = "zalagren-demo";
-  const initial = {
-    participant: { name: "Demo Participant", mode: "PEOPLE", context: "Personal" },
-    intents: [], proposals: [], actions: [], events: [], evidence: [],
-    selectedCommunity: "TSAVO Royal Suburbs"
-  };
-  const state = Object.assign(initial, JSON.parse(localStorage.getItem(KEY) || "null") || {});
-  const communities = [
-    {name:"TSAVO Royal Suburbs",place:"Roysambu, Nairobi",kind:"Residential community",note:"Evidence-backed instance; no invented residents or permissions."},
-    {name:"Mi Vida Garden City",place:"Garden City, Thika Road, Nairobi",kind:"Residential community",note:"Exact phase/building/unit inventory is not inferred."},
-    {name:"Qwetu Ruaraka",place:"Outer Ring Road, Nairobi",kind:"Student residence",note:"580 beds according to referenced evidence; no invented rooms or residents."}
-  ];
-  const services = [
-    ["BeatPay","Authorized payment coordination through regulated external rails.","SUPPORTED"],
-    ["BeatFood","Food discovery, ordering and provider fulfilment; provider delivery is independently evidenced.","SUPPORTED"],
-    ["BeatHealth","Protected health discovery, appointments and care coordination; clinical authority remains external.","SUPPORTED"],
-    ["BeatGenzi","Jobs, services, training, partnerships and opportunity discovery.","SUPPORTED"],
-    ["BeatMarket","Marketplace coordination with category, seller, consumer and safety controls.","SUPPORTED"],
-    ["BeatRide","Mobility coordination with explicit driver, vehicle, safety and regulatory boundaries.","SUPPORTED"],
-    ["BeatBnB","Accommodation coordination with explicit host, property, availability and stay evidence.","SUPPORTED"],
-    ["BeatGuardian","Trusted check-ins and incident coordination without replacing emergency authorities.","SUPPORTED"],
-    ["BeatUtilities","Water, electricity, gas, waste and connectivity coordination against authoritative providers.","SUPPORTED"],
-    ["Home Services","Cleaning, repair, laundry and property maintenance coordination.","SUPPORTED"]
-  ];
-
-  const artwork = {
-    identity:{src:"assets/IMG_1505.png",alt:"Zalagren Identity + Access artwork",label:"Identity + Access"},
-    transactions:{src:"assets/IMG_1506.png",alt:"Zalagren Music + Transactions artwork",label:"Music + Transactions"},
-    food:{src:"assets/IMG_1507.png",alt:"Zalagren Food + Delivery artwork",label:"Food + Delivery"},
-    hospitality:{src:"assets/IMG_1508.png",alt:"Zalagren Accommodation Hospitality artwork",label:"Accommodation Hospitality"},
-    genzi:{src:"assets/IMG_1509.png",alt:"Zalagren Connect + Empower Generation artwork",label:"Connect + Empower · Generation"},
-    logo:{src:"assets/IMG_1510.png",alt:"Zalagren primary logo artwork",label:"Zalagren"}
-  };
-  const foundation = [
-    ["Identity","Legal / verified identity","One durable identity boundary."],["Account","Zalagren account","Authentication container; not a role."],["Subscription","Participation plan","Commercial relationship, not permission."],["Entitlement","Available capability","What the account can access by plan."],["Participant","Canonical actor","One participant can hold many relationships."],["People","Human relationships","Resident, owner, worker, provider, visitor and more."],["Communities","Participation coordinators","Community context without owning platform services."],["Relationship","Participant ↔ context","Describes connection; never silently authorizes."],["Context","Where / why / when","Makes capability relevant."],["Place","Site → phase → building → unit","Canonical physical hierarchy."],["Organization","Institutional entity","Company, nonprofit, government, cooperative or other."],["Provider","Operational service identity","Can fulfil a service; provider status is not authority."],["Capability","What can be done","A declared ability, not permission."],["Authorization","Explicit authority","Contextual, effective, revocable and fail-closed."]
-  ];
-  const intelligenceLayers = [
-    ["GENESIS","Observe → Understand → Contextualize → Detect → Reason → Propose → Authorize → Execute → Measure → Learn.","Governed intelligence loop."],
-    ["CONSTANTYNA","Explain → frame needs → compare options → propose useful next steps.","Human-facing intelligence interface."],
-    ["Evidence","Observed / authoritative proof","The boundary between a proposed outcome and a verified outcome."],
-    ["Knowledge","Evidence-derived understanding","History is never rewritten."],["Proposal","A suggested path","Proposal ≠ authorization."]
-  ];
-  const securityLayers = [
-    ["Authentication","Who is signed in","Does not grant consequential authority."],["Authorization","What this participant may do now","Checks capability, context, target, status and time."],["Privacy","Minimum necessary information","Purpose, sharing, retention, deletion and export."],["Audit","Traceable events","Actions and evidence remain attributable."],["Failure states","Offline · pending · retry · sync · conflict · rejection · failure · recovery","No unverified success."],["External trust","Provider remains authoritative","External execution is only real when independently evidenced."]
-  ];
-  const topNav = [
-    ["home","⌂","Home"],["intelligence","✦","Intelligence"],["people","◎","People"],
-    ["services","◇","Services"],["activity","◷","Activity"]
-  ];
-  const titles = {
-    home:"Home", intelligence:"Intelligence", people:"People", community:"Community",
-    services:"Services", activity:"Activity", lifecycle:"Execution", service:"Service", foundation:"Foundation", security:"Security", ecosystem:"Ecosystem", settings:"Settings"
-  };
-
-  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-  function esc(v){ return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c])); }
-  function badge(v){
-    const tone = v==="SUPPORTED"||v==="VERIFIED" ? "green" : v==="PROPOSED" ? "orange" : "blue";
-    return '<span class="badge '+tone+'">'+esc(v)+'</span>';
-  }
-
-  function readRoute(){
-    const p = new URLSearchParams(location.search);
-    return { view:p.get("view") || "home", service:p.get("service"), community:p.get("community"), context:p.get("context") };
-  }
-  function routeLabel(route){
-    if(route.view==="service") return ["Services", services[Number(route.service)]?.[0] || "Service"];
-    if(route.view==="lifecycle") return ["Activity","Execution lifecycle"];
-    if(route.view==="community" && route.community) return ["Community", route.community];
-    return [titles[route.view] || "Home"];
-  }
-  function currentNavState(){
-    return history.state && history.state.zalagren ? history.state.zalagren : {idx:0,total:1};
-  }
-  function navigate(view, params={}, replace=false){
-    const q = new URLSearchParams({view});
-    Object.entries(params).forEach(([k,v])=>{ if(v!==undefined && v!==null && v!=="") q.set(k,v); });
-    const cur=currentNavState();
-    const next={idx:replace?cur.idx:cur.idx+1,total:replace?cur.total:cur.idx+2};
-    const url=location.pathname+"?"+q.toString();
-    history[replace?"replaceState":"pushState"]({zalagren:next}, "", url);
-    render(readRoute());
-  }
-  function goBack(){ if(currentNavState().idx>0) history.back(); else navigate("home",{},true); }
-  function goForward(){ if(currentNavState().idx<currentNavState().total-1) history.forward(); }
-
-  function shell(route, content, nested=false){
-    const navState=currentNavState(), crumb=routeLabel(route);
-    document.getElementById("app").innerHTML =
-      '<header class="top"><div class="topbar">'+
-      '<button class="nav-control menu-trigger" id="menuBtn" aria-label="Open Zalagren menu"><span></span><span></span><span></span></button>'+
-      '<button class="brand" data-view="home" aria-label="Zalagren home"><span class="mark"><img src="assets/IMG_1505.png" alt="Zalagren logo" width="132" height="40" decoding="sync" fetchpriority="high"></span></button>'+
-      '<button class="account-control" id="accountBtn" aria-label="Open participant controls"><span class="account-dot"></span><span>My Zalagren</span></button>'+
-      '</div></header>'+
-      '<main class="shell">'+content+'</main>'+
-      '<div id="toast" class="toast"></div><div id="sheet" class="sheet" hidden></div>';
-    document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.view)));
-    document.getElementById("menuBtn").onclick=openMenu;
-    document.getElementById("accountBtn").onclick=()=>navigate("settings");
-  }
-
-function foundationPage(){
-    return '<section class="section first"><span class="eyebrow dark">SHARED PLATFORM CORE</span><h1 class="page-title">The whole Zalagren foundation.</h1><p class="lead">One canonical model underneath People, Communities, Places, Services and Intelligence. Roles and products do not create separate identities.</p><div class="detail-card"><div class="identity"><div class="avatar">1</div><div><small>CORE INVARIANT</small><h3>Identity → Account → Participant</h3><p>Then relationships, contexts, capabilities, authorizations and governed outcomes.</p></div><span class="badge green">SUPPORTED</span></div><div class="flow timeline">'+["Identity","Account","Participant","Relationship","Context","Capability","Authorization","Intent","Proposal","Action","Event","Evidence"].map((x,i)=>'<span><b>'+String(i+1)+'</b>'+x+'</span>').join('<i>→</i>')+'</div></div><div class="grid two">'+foundation.map((x,i)=>'<div class="card"><span class="card-icon">'+String(i+1).padStart(2,"0")+'</span><strong>'+esc(x[0])+'</strong><span>'+esc(x[1])+'</span><small class="micro">'+esc(x[2])+'</small></div>').join("")+'</div></section>';
-  }
-  function intelligenceArchitecture(){
-    return '<section class="section first"><span class="eyebrow dark">INTELLIGENCE ARCHITECTURE</span><h1 class="page-title">Intelligence without self-authority.</h1><p class="lead">Understanding, recommendation, authorization, execution and evidence remain separate.</p><div class="grid two">'+intelligenceLayers.map(x=>'<div class="card"><span class="badge green">SUPPORTED</span><h3>'+esc(x[0])+'</h3><p>'+esc(x[1])+'</p></div>').join("")+'</div><div class="callout compact"><h3>Understanding Zalagren ≠ controlling Zalagren.</h3><p>GENESIS and CONSTANTYNA can reason and propose inside governed boundaries. Core authorization remains the authority boundary.</p></div></section>';
-  }
-  function securityPage(){
-    return '<section class="section first"><span class="eyebrow dark">SECURITY + TRUST</span><h1 class="page-title">Fail closed. Tell the truth.</h1><p class="lead">Security, privacy, audit, external-provider trust and failure states are part of the product model.</p><div class="grid two">'+securityLayers.map(x=>'<div class="card"><span class="card-icon">✓</span><h3>'+esc(x[0])+'</h3><p>'+esc(x[1])+'</p></div>').join("")+'</div><div class="detail-card" style="margin-top:13px"><h3>Truth states</h3><div class="chips"><span class="micro-pill">VERIFIED</span><span class="micro-pill">SUPPORTED</span><span class="micro-pill">PROPOSED</span><span class="micro-pill">FAILED</span></div></div></section>';
-  }
   function ecosystemPage(){
     const domains=[["foundation","Foundation","Identity, account, participant, places, organizations and providers."],["community","Communities","TSAVO, Mi Vida and Qwetu contextualized without invented residents or permissions."],["services","Services","Zalagren catalogue and Beat service family."],["intelligence","Intelligence","CONSTANTYNA and GENESIS."],["security","Security","Authorization, privacy, audit and failure states."],["activity","Activity","Intent → proposal → authorization → action → event → evidence."]];
     const art=[artwork.transactions,artwork.food,artwork.hospitality,artwork.genzi];
     return '<section class="section first"><span class="eyebrow dark">ONE ECOSYSTEM</span><h1 class="page-title">Every surface, one governed world.</h1><p class="lead">Explore Zalagren by domain instead of forcing every capability into one dashboard.</p><div class="grid two">'+domains.map(x=>'<button class="card action" data-route="'+x[0]+'"><span class="card-icon">◆</span><strong>'+x[1]+'</strong><span>'+x[2]+'</span><b class="chev">›</b></button>').join("")+'</div><div class="section-head"><h2>Uploaded product artwork</h2><p>Background-removed derivatives now have a real place in the interface.</p></div><div class="grid two">'+art.map(a=>'<div class="card artwork-card"><img src="'+a.src+'" alt="'+esc(a.alt)+'"><strong>'+esc(a.label)+'</strong><span>Repository artwork · transparent derivative</span></div>').join("")+'</div></section>';
   }
-
+  function ecosystemPage(){
+    const domains=[
+      ["foundation","Platform core","Identity, account, participant, relationships, context, capability and authorization."],
+      ["community","People & communities","One participant identity across personal and community contexts."],
+      ["services","Services","A governed service catalog with explicit eligibility and provider truth."],
+      ["intelligence","Intelligence","CONSTANTYNA and GENESIS operate inside the platform authority boundary."],
+      ["security","Security & trust","Authentication, authorization, privacy, audit and failure states."],
+      ["activity","Activity & evidence","Intent → proposal → authorization → action → event → evidence."]
+    ];
+    return '<section class="section first"><div class="workspace-heading"><span><span class="eyebrow dark">WORKSPACE</span><h1 class="page-title">Zalagren, as one platform.</h1><p class="lead">A focused working environment: shared platform core, contextual data, governed workflows and intelligence — without fragmented product silos.</p></span><span class="workspace-status"><i></i> PLATFORM ONLINE</span></div><div class="grid two workspace-grid">'+
+      domains.map(x=>'<button class="card action workspace-card" data-route="'+x[0]+'"><span class="workspace-card-top"><span class="card-icon">◆</span><b class="chev">›</b></span><strong>'+x[1]+'</strong><span>'+x[2]+'</span></button>').join("")+
+      '</div><div class="callout compact"><h3>One platform. Many contexts. One governed model.</h3><p>ServiceNow’s strongest pattern is not copying its products; it is the platform discipline underneath them. Zalagren adopts that pattern while preserving its own identity, authorization and evidence boundaries.</p></div></section>';
+  }
   function home(){
     const recent=state.events.slice(-3).reverse();
     return '<section class="home-surface">'+
@@ -154,19 +55,20 @@ function intelligence(){
   }
 
   function serviceIcon(i,s){
-    const map={BeatPay:artwork.transactions,BeatFood:artwork.food,BeatGenzi:artwork.genzi,BeatBnB:artwork.hospitality};
-    const a=map[s[0]];
-    return a?'<img src="'+a.src+'" alt="'+esc(a.alt)+'">':'<span>'+esc(s[0].slice(0,1))+'</span>';
+    const a=serviceIdentity[s[0]];
+    if(a) return '<img src="'+a.src+'" alt="'+esc(a.alt)+'">';
+    return '<span class="service-symbol" aria-hidden="true">'+esc(serviceSymbols[s[0]] || s[0].slice(0,1))+'</span>';
   }
 
   function servicesView(){
     return '<section class="section first"><span class="eyebrow dark">SERVICES</span><h1 class="page-title">Turn needs into governed outcomes.</h1><p class="lead">A service definition is not a connected provider. Zalagren never invents fulfilment, payment, booking or success.</p>'+
-      '<div class="service-list">'+services.map((s,i)=>'<button class="service-row" data-service="'+i+'"><div class="service-icon">'+serviceIcon(i,s)+'</div><div class="service-copy"><strong>'+s[0]+'</strong><small>'+s[1]+'</small></div>'+badge(s[2])+'<span class="chev">›</span></button>').join("")+'</div></section>';
+      '<div class="service-list">'+services.map((s,i)=>'<button class="service-row" data-service="'+i+'"><div class="service-icon">'+serviceIcon(i,s)+'</div><div class="service-copy"><strong>'+s[0]+'</strong><small>'+s[1]+'</small></div><span class="service-state">'+badge(s[2])+'</span><span class="chev">›</span></button>').join("")+'</div></section>';
   }
 
   function serviceDetail(i){
     const s=services[i];
-    return '<section class="section first detail-view"><div class="detail-kicker"><span class="eyebrow dark">SERVICE</span>'+badge(s[2])+'</div><h1 class="page-title">'+esc(s[0])+'</h1><p class="lead">'+esc(s[1])+'</p>'+
+    const mark=serviceIdentity[s[0]];
+    return '<section class="section first detail-view"><div class="service-identity-header">'+(mark?'<div class="service-identity-mark"><img src="'+mark.src+'" alt="'+esc(mark.alt)+'"></div>':'<div class="service-identity-mark service-symbol-mark">'+esc(serviceSymbols[s[0]]||s[0].slice(0,1))+'</div>')+'<div><span class="eyebrow dark">SERVICE</span>'+badge(s[2])+'<h1 class="page-title">'+esc(s[0])+'</h1></div></div><p class="lead">'+esc(s[1])+'</p>'+
       '<div class="detail-card"><div class="section-head"><div><h2>Governed lifecycle</h2><p>Every consequential transition is explicit.</p></div></div><div class="lifecycle">'+["Need","Intent","Eligibility","Proposal","Authorization","Action","Event","Evidence"].map((x,n)=>'<span><b>'+String(n+1)+'</b>'+x+'</span>').join("")+'</div>'+
       '<button class="btn primary darkbtn" id="createIntent">Create intent</button><p class="micro">Creating an intent does not place an order, charge money, book a provider or authorize execution.</p></div>'+
       '<div class="detail-card"><h3>What this service is not</h3><p>No invented provider connection. No simulated external success. No self-authorized execution.</p></div></section>';
@@ -222,7 +124,7 @@ function intelligence(){
   function openMenu(){
     const s=document.getElementById("sheet");
     s.hidden=false;
-    s.innerHTML='<div class="sheet-backdrop" id="sheetClose"></div><div class="sheet-panel"><div class="sheet-grabber"></div><div class="section-head"><div><span class="eyebrow dark">ZALAGREN</span><h2>Menu</h2></div><button class="close" id="sheetCloseBtn">×</button></div>'+
+    s.innerHTML='<div class="sheet-backdrop" id="sheetClose"></div><div class="sheet-panel"><div class="sheet-grabber"></div><div class="menu-brand"><img src="assets/IMG_1505.png" alt="Zalagren logo"><span><span class="eyebrow dark">ZALAGREN</span><small>Workspace</small></span></div><div class="section-head"><div><h2>Menu</h2></div><button class="close" id="sheetCloseBtn">×</button></div>'+
       '<button class="menu-row" data-route="foundation"><strong>Platform foundation</strong><span>Identity, account, participant, places, organizations</span>›</button><button class="menu-row" data-route="ecosystem"><strong>Full ecosystem map</strong><span>People, communities, services and intelligence</span>›</button><button class="menu-row" data-route="people"><strong>Participant & contexts</strong><span>Relationships and active context</span>›</button>'+
       '<button class="menu-row" data-route="services"><strong>Services</strong><span>Needs, capabilities and governed outcomes</span>›</button><button class="menu-row" data-route="activity"><strong>Activity & evidence</strong><span>Trace the governed lifecycle</span>›</button><button class="menu-row" data-route="security"><strong>Security & trust</strong><span>Authorization, privacy and failure states</span>›</button><button class="menu-row" data-route="settings"><strong>My Zalagren settings</strong><span>One home for account, identity, privacy, voice and preferences</span>›</button></div>';    document.getElementById("sheetClose").onclick=closeMenu;
     document.getElementById("sheetCloseBtn").onclick=closeMenu;
