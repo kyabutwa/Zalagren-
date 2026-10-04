@@ -27,7 +27,6 @@
   // Global brand identity is always IMG_1505. Supplied artwork is assigned to a service only
   // when its observed meaning is unambiguous; it is never exposed as a generic gallery.
   const serviceIdentity = {
-    BeatPay:{src:"assets/IMG_1506.png",alt:"BeatPay service identity"},
     BeatFood:{src:"assets/IMG_1507.png",alt:"BeatFood service identity"},
     BeatBnB:{src:"assets/IMG_1508.png",alt:"BeatBnB service identity"},
     BeatGenzi:{src:"assets/IMG_1509.png",alt:"BeatGenzi service identity"}
@@ -93,7 +92,7 @@
     document.getElementById("app").innerHTML =
       '<header class="top"><div class="topbar">'+
       '<button class="nav-control menu-trigger" id="menuBtn" aria-label="Open Zalagren workspace menu"><span></span><span></span><span></span></button>'+
-      '<button class="brand" data-view="home" aria-label="Zalagren home"><span class="mark"><img src="assets/IMG_1505.png" alt="Zalagren logo" width="132" height="40" decoding="sync" fetchpriority="high"></span></button>'+
+      '<button class="brand" data-view="home" aria-label="Zalagren home"><span class="mark"><img src="assets/IMG_1510.png" alt="Zalagren logo" width="132" height="40" decoding="sync" fetchpriority="high"></span></button>'+
       '<button class="account-control" id="accountBtn" aria-label="Open My Zalagren"><span class="account-dot"></span><span>My Zalagren</span></button>'+
       '</div><div class="workspacebar">'+
       '<button class="workspace-context" data-view="people"><span class="workspace-pulse"></span><strong>'+esc(context)+'</strong><span class="workspace-separator">·</span><span>'+esc(crumb.join(" / "))+'</span></button>'+
@@ -226,9 +225,20 @@ function intelligence(){
     return '<section class="section first"><span class="eyebrow dark">MY ZALAGREN</span><h1 class="page-title">One place for your Zalagren settings.</h1><p class="lead">Account, identity, access, privacy, intelligence and participation controls belong to one settings surface. A setting changes preference or configuration; it never silently grants authorization.</p><div class="settings-list">'+rows.map(x=>'<button class="settings-row"><span><strong>'+x[0]+'</strong><small>'+x[1]+'</small></span><b>›</b></button>').join('')+'</div><div class="callout compact"><h3>Authority stays separate.</h3><p>Authentication, subscription, relationship and preference settings never become consequential authorization by themselves.</p></div></section>';
   }
 
+  function settings(){
+    const groups=[
+      ["ACCOUNT","Account","Your single Zalagren account, participant boundary and identity state.","Account · Identity"],
+      ["ACCESS","Security & access","Authentication, devices, sessions, privacy and authorization controls.","Security · Privacy & data"],
+      ["INTELLIGENCE","Voice & intelligence","CONSTANTYNA voice input/output, intelligence preferences and interaction controls.","Voice · Intelligence"],
+      ["PARTICIPATION","Communities & services","Your community relationships, active contexts, capabilities and entitlements.","Communities · Services & entitlements"],
+      ["EXPERIENCE","Appearance & notifications","Interface density, motion, display and participant-controlled notifications.","Appearance · Notifications"]
+    ];
+    return '<section class="settings-page section first"><div class="settings-hero"><div><span class="eyebrow dark">MY ZALAGREN</span><h1 class="page-title">Everything about your Zalagren.</h1><p class="lead">One settings workspace for identity, access, privacy, intelligence, participation and experience. Preferences configure your experience; they never create authority.</p></div><span class="workspace-status"><i></i> PERSONAL CONTEXT</span></div><div class="settings-groups">'+groups.map((g,i)=>'<section class="settings-group"><div class="settings-group-head"><span class="settings-index">0'+(i+1)+'</span><div><span class="eyebrow dark">'+g[0]+'</span><h2>'+g[1]+'</h2><p>'+g[2]+'</p></div></div><button class="settings-row"><span><strong>'+g[3]+'</strong><small>Open this unified settings area</small></span><b>›</b></button></section>').join('')+'</div><div class="callout compact"><h3>Authority stays separate.</h3><p>Authentication, subscription, relationship and preference settings never become consequential authorization by themselves.</p></div></section>';
+  }
+
   function openMenu(){
     const s=document.getElementById("sheet"); s.hidden=false;
-    s.innerHTML='<div class="sheet-backdrop" id="sheetClose"></div><div class="sheet-panel"><div class="sheet-grabber"></div><div class="menu-brand"><img src="assets/IMG_1505.png" alt="Zalagren logo"><span><span class="eyebrow dark">ZALAGREN</span><small>Workspace</small></span></div><div class="section-head"><div><h2>Menu</h2></div><button class="close" id="sheetCloseBtn">×</button></div>'+
+    s.innerHTML='<div class="sheet-backdrop" id="sheetClose"></div><div class="sheet-panel"><div class="sheet-grabber"></div><div class="menu-brand"><img src="assets/IMG_1510.png" alt="Zalagren logo"><span><span class="eyebrow dark">ZALAGREN</span><small>Workspace</small></span></div><div class="section-head"><div><h2>Menu</h2></div><button class="close" id="sheetCloseBtn">×</button></div>'+
       '<button class="menu-row" data-route="foundation"><strong>Platform foundation</strong><span>Identity, account, participant, places, organizations</span>›</button><button class="menu-row" data-route="ecosystem"><strong>Full ecosystem workspace</strong><span>People, communities, services and intelligence</span>›</button><button class="menu-row" data-route="people"><strong>Participant & contexts</strong><span>Relationships and active context</span>›</button><button class="menu-row" data-route="services"><strong>Services</strong><span>Needs, capabilities and governed outcomes</span>›</button><button class="menu-row" data-route="activity"><strong>Activity & evidence</strong><span>Trace the governed lifecycle</span>›</button><button class="menu-row" data-route="security"><strong>Security & trust</strong><span>Authorization, privacy and failure states</span>›</button><button class="menu-row" data-route="settings"><strong>My Zalagren settings</strong><span>Account, identity, privacy, voice and preferences</span>›</button></div>';
     document.getElementById("sheetClose").onclick=closeMenu; document.getElementById("sheetCloseBtn").onclick=closeMenu;
     s.querySelectorAll("[data-route]").forEach(b=>b.onclick=()=>{closeMenu();navigate(b.dataset.route);});
