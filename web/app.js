@@ -90,7 +90,7 @@
     document.getElementById("app").innerHTML =
       '<header class="top"><div class="topbar">'+
       '<button class="nav-control menu-trigger" id="menuBtn" aria-label="Open Zalagren menu"><span></span><span></span><span></span></button>'+
-      '<button class="brand" data-view="home" aria-label="Zalagren home"><span class="mark"><img src="assets/IMG_1505.png" alt="Zalagren"></span></button>'+
+      '<button class="brand" data-view="home" aria-label="Zalagren home"><span class="mark"><img src="assets/IMG_1505.png" alt="Zalagren logo" width="132" height="40" decoding="sync" fetchpriority="high"></span></button>'+
       '<button class="account-control" id="accountBtn" aria-label="Open participant controls"><span class="account-dot"></span><span>My Zalagren</span></button>'+
       '</div></header>'+
       '<main class="shell">'+content+'</main>'+
