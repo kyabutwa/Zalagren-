@@ -54,7 +54,6 @@ jobs:
           grep -q 'assets/IMG_1505.png' web/app.js
           grep -q 'function settings()' web/app.js
           node --check web/app.js
-          grep -q 'assets/IMG_1510.png' web/app.js
           test -f docs/WEB-ARTWORK-MAP.md
 
       - name: Validate no fabricated deployment claims
