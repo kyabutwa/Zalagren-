@@ -75,7 +75,11 @@ jobs:
       - name: Prepare uploaded image assets
         run: |
           mkdir -p web/assets
-          for src in IMG_1505.jpeg IMG_1506.jpeg IMG_1507.jpeg IMG_1508.jpeg IMG_1509.jpeg IMG_1510.jpeg; do
+          # IMG_1505 is the canonical Zalagren logo. Preserve the source artwork exactly.
+          convert IMG_1505.jpeg -strip -alpha on web/assets/IMG_1505.png
+
+          # Other uploaded artwork may use the transparent derivative pipeline.
+          for src in IMG_1506.jpeg IMG_1507.jpeg IMG_1508.jpeg IMG_1509.jpeg IMG_1510.jpeg; do
             test -f "$src"
             base="$(basename "$src" .jpeg)"
             convert "$src" -alpha on -fuzz 8% -fill none -draw "color 0,0 floodfill" "web/assets/${base}.png"
