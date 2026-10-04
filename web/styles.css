@@ -171,3 +171,11 @@ input::placeholder,textarea::placeholder{color:#53657a!important;-webkit-text-fi
 .white-surface .eyebrow,.light-surface .eyebrow,.surface-light .eyebrow{
   color:var(--green)!important;
 }
+
+/* 2026-10-04 SETTINGS + HEADER CONTRACT */
+.settings-list{border-top:1px solid var(--line);margin-top:24px}
+.settings-row{width:100%;display:grid;grid-template-columns:1fr 20px;gap:18px;align-items:center;padding:18px 0;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--white);text-align:left;cursor:pointer}
+.settings-row strong,.settings-row small{display:block}
+.settings-row strong{font-size:16px;color:var(--white)!important;font-weight:650}
+.settings-row small{margin-top:4px;color:var(--muted)!important;font-size:12px;line-height:18px}
+.settings-row b{color:var(--green)!important;font-size:22px;font-weight:400}
