@@ -87,25 +87,20 @@
 
   function shell(route, content, nested=false){
     const navState=currentNavState(), crumb=routeLabel(route);
-    const back = navState.idx>0 ? '<button class="nav-control" id="backBtn" aria-label="Back">‹<span>Back</span></button>' : '<span class="nav-spacer"></span>';
-    const forward = navState.idx<navState.total-1 ? '<button class="nav-control" id="forwardBtn" aria-label="Forward">›</button>' : '<span class="nav-spacer"></span>';
     document.getElementById("app").innerHTML =
-      '<header class="top"><div class="topbar">'+back+
-      '<button class="brand" data-view="home"><span class="mark"><img src="assets/IMG_1510.png" alt="Zalagren logo"></span><span>Zalagren</span></button>'+
-      '<div class="location"><strong>'+esc(crumb[crumb.length-1])+'</strong><small>'+crumb.slice(0,-1).map(esc).join("  /  ")+'</small></div>'+
-      '<div class="top-actions">'+forward+'<button class="menu" id="menuBtn" aria-label="Open menu">•••</button></div>'+
-      '</div></header><main class="shell">'+content+'</main>'+
-      '<nav class="bottom" aria-label="Primary">'+topNav.map(([id,icon,label])=>'<button data-view="'+id+'" class="'+(route.view===id||(nested&&id==="services"&&route.view==="service")?"active":"")+'"><i>'+icon+'</i><span>'+label+'</span></button>').join("")+'</nav>'+
+      '<header class="top"><div class="topbar">'+
+      '<button class="nav-control menu-trigger" id="menuBtn" aria-label="Open Zalagren menu"><span></span><span></span><span></span></button>'+
+      '<button class="brand" data-view="home" aria-label="Zalagren home"><span class="mark"><img src="assets/IMG_1505.png" alt="Zalagren"></span></button>'+
+      '<button class="account-control" id="accountBtn" aria-label="Open participant controls"><span class="account-dot"></span><span>My Zalagren</span></button>'+
+      '</div></header>'+
+      '<main class="shell">'+content+'</main>'+
       '<div id="toast" class="toast"></div><div id="sheet" class="sheet" hidden></div>';
-
     document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.view)));
-    document.getElementById("backBtn")?.addEventListener("click",goBack);
-    document.getElementById("forwardBtn")?.addEventListener("click",goForward);
     document.getElementById("menuBtn").onclick=openMenu;
+    document.getElementById("accountBtn").onclick=()=>navigate("people");
   }
 
-
-  function foundationPage(){
+function foundationPage(){
     return '<section class="section first"><span class="eyebrow dark">SHARED PLATFORM CORE</span><h1 class="page-title">The whole Zalagren foundation.</h1><p class="lead">One canonical model underneath People, Communities, Places, Services and Intelligence. Roles and products do not create separate identities.</p><div class="detail-card"><div class="identity"><div class="avatar">1</div><div><small>CORE INVARIANT</small><h3>Identity → Account → Participant</h3><p>Then relationships, contexts, capabilities, authorizations and governed outcomes.</p></div><span class="badge green">SUPPORTED</span></div><div class="flow timeline">'+["Identity","Account","Participant","Relationship","Context","Capability","Authorization","Intent","Proposal","Action","Event","Evidence"].map((x,i)=>'<span><b>'+String(i+1)+'</b>'+x+'</span>').join('<i>→</i>')+'</div></div><div class="grid two">'+foundation.map((x,i)=>'<div class="card"><span class="card-icon">'+String(i+1).padStart(2,"0")+'</span><strong>'+esc(x[0])+'</strong><span>'+esc(x[1])+'</span><small class="micro">'+esc(x[2])+'</small></div>').join("")+'</div><div class="detail-card" style="margin-top:13px"><img class="artwork-wide" src="'+artwork.identity.src+'" alt="'+esc(artwork.identity.alt)+'"><div class="section-head"><div><span class="eyebrow dark">UPLOADED ARTWORK</span><h3>'+esc(artwork.identity.label)+'</h3></div><span class="badge green">VERIFIED</span></div><p>The repository artwork is now connected to the corresponding platform meaning.</p></div></section>';
   }
   function intelligenceArchitecture(){
@@ -122,15 +117,16 @@
 
   function home(){
     const recent=state.events.slice(-3).reverse();
-    return '<section class="hero"><div class="eyebrow">INTELLIGENT LIVING INFRASTRUCTURE</div><h1>Your identity.<br>Your world.<br><em>One ecosystem.</em></h1><p>Zalagren connects people, communities, places, organizations, providers, services and resources through governed participation.</p><div class="hero-actions"><button class="btn primary" data-route="intelligence">Ask CONSTANTYNA</button><button class="btn ghost" data-route="community">Explore communities</button></div></section>'+
-      '<section class="section"><div class="section-head"><div><span class="eyebrow dark">YOUR ZALAGREN</span><h2>Command center</h2></div><span class="micro-pill">One participant · many contexts</span></div><div class="grid four">'+
-      [['people','People','Identity, participant, relationships and context','◎'],['community','Community','Places, buildings, units and participation','⌂'],['services','Services','Needs, eligibility, proposals and fulfilment','◇'],['activity','Activity','Intent → proposal → authorization → action → evidence','◷']].map(x=>'<button class="card action" data-route="'+x[0]+'"><span class="card-icon">'+x[3]+'</span><strong>'+x[1]+'</strong><span>'+x[2]+'</span><b class="chev">›</b></button>').join("")+
-      '</div></section><section class="section"><div class="callout"><div><span class="eyebrow">GOVERNANCE</span><h2>No authorization → no consequential action.</h2><p>GENESIS can observe and propose. CONSTANTYNA can explain and help. Neither can grant authority to itself.</p></div><button class="btn light" data-route="activity">View activity</button></div></section>'+
-      '<section class="section"><div class="section-head"><h2>Recent activity</h2>'+badge("SUPPORTED")+'</div>'+
-      (recent.length?recent.map(e=>'<div class="listrow"><div><strong>'+esc(e.title)+'</strong><small>'+esc(e.detail)+'</small></div><span class="dot">●</span></div>').join(""):'<div class="empty">Your actions will appear here. Create an intent from a service or ask CONSTANTYNA.</div>')+'</section>';
+    return '<section class="home-surface">'+
+      '<div class="home-intro"><div><span class="eyebrow">INTELLIGENT LIVING INFRASTRUCTURE</span><h1 class="home-title">Your identity.<br>Your world.<br><em>One ecosystem.</em></h1><p class="home-lede">People, places, needs, capabilities, authority and resources — connected through one governed Zalagren ecosystem.</p></div></div>'+
+      '<div class="home-command"><button class="command-primary" data-route="intelligence"><span class="command-symbol">✦</span><span><b>Ask CONSTANTYNA</b><small>Understand, compare, discover and propose.</small></span><span>›</span></button><button class="command-row" data-route="services"><span>Services</span><small>Turn a need into a governed outcome</small><span>›</span></button><button class="command-row" data-route="community"><span>Your world</span><small>Communities, places and contexts</small><span>›</span></button><button class="command-row" data-route="activity"><span>Activity</span><small>Intent → proposal → authorization → action → evidence</small><span>›</span></button></div>'+
+      '<section class="home-section"><div class="section-label"><span>CORE PRINCIPLE</span><i>01</i></div><p class="principle">No authorization <strong>→</strong> no consequential action.</p><p class="home-copy">GENESIS can observe and propose. CONSTANTYNA can explain and help. Neither can grant authority to itself.</p></section>'+
+      '<section class="home-section"><div class="section-label"><span>RECENT ACTIVITY</span><i>'+String(recent.length).padStart(2,"0")+'</i></div>'+
+      (recent.length?recent.map(e=>'<button class="activity-line" data-route="activity"><span class="activity-dot"></span><span><b>'+esc(e.title)+'</b><small>'+esc(e.detail)+'</small></span><span>›</span></button>').join(""):'<div class="quiet-line">Nothing has happened yet. Zalagren will show consequential activity here only when it is actually recorded.</div>')+'</section>'+
+      '</section>';
   }
 
-  function intelligence(){
+function intelligence(){
     return '<section class="section first"><span class="eyebrow dark">INTELLIGENCE</span><h1 class="page-title">CONSTANTYNA</h1><p class="lead">A human-facing intelligence interface for understanding Zalagren, framing needs, comparing options and creating proposals.</p>'+
       '<div class="chat" id="chat"><div class="message assistant"><b>CONSTANTYNA</b><p>I can explain the ecosystem, help frame a need, identify opportunities and propose useful next steps. I cannot authorize myself or claim an external transaction happened when it did not.</p></div><div id="messages"></div></div>'+
       '<form id="askForm" class="composer"><input id="askInput" autocomplete="off" placeholder="Ask: What can Zalagren do for me?"><button class="send">Send</button></form>'+
