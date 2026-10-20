@@ -2,7 +2,7 @@
 
 ## Product identity
 
-Royal City is the public product name across the web experience, installable app, account/settings surfaces, navigation, and native iOS display name. Its wordmark and emblem are the first-party master assets. The GitHub repository path, existing Swift target, bundle identifier, and internal source/API identifiers are intentionally retained as compatibility identifiers; changing those would affect repository links, installed app identity, or integrations without improving the resident experience.
+Royal City is the public product name across the web experience, installable app, account/settings surfaces, navigation, and native iOS display name. Its logo is the official crown and stacked wordmark sourced from the Royal City project at `public/brand/royal-city-logo-green.png`; compact crown assets are crops of this artwork. The GitHub repository path, existing Swift target, bundle identifier, and internal source/API identifiers are intentionally retained as compatibility identifiers; changing those would affect repository links, installed app identity, or integrations without improving the resident experience.
 
 ## Preserved account and local state
 

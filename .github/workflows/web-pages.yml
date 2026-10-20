@@ -54,6 +54,9 @@ jobs:
           test -f docs/ROYAL-CITY-PLATFORM-MIGRATION.md
           test -s web/royal-city-wordmark.svg
           test -s web/royal-city-emblem.svg
+          test -s web/royal-city-logo.png
+          test -s web/royal-city-emblem.png
+          test -s ios/Zalagren/Assets.xcassets/RoyalCityEmblem.imageset/Contents.json
           grep -q 'assets/IMG_1507.png' web/app.js
           grep -q 'assets/IMG_1508.png' web/app.js
           grep -q 'assets/IMG_1509.png' web/app.js
@@ -83,7 +86,7 @@ jobs:
         run: |
           mkdir -p web/assets
           # Legacy and service artwork stays in the deployed artwork set. Royal City's global identity is the
-          # first-party vector wordmark/emblem; IMG_1510 belongs to BeatHealth and IMG_1505 is retired artwork.
+          # official crown artwork comes from the Royal City source project; IMG_1510 belongs to BeatHealth and IMG_1505 is retired artwork.
           convert IMG_1505.jpeg -alpha on -fuzz 8% -fill none -draw "color 0,0 floodfill" -strip web/assets/IMG_1505.png
 
           # Other uploaded artwork may use the transparent derivative pipeline.
@@ -125,6 +128,10 @@ jobs:
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/manifest.webmanifest" | grep -qi "Royal City"
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/royal-city-emblem.svg" | grep -qi "svg"
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/royal-city-wordmark.svg" | grep -qi "Royal City"
+          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/royal-city-logo.png" -o /tmp/royal-city-logo.png
+          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/royal-city-emblem.png" -o /tmp/royal-city-emblem.png
+          test -s /tmp/royal-city-logo.png
+          test -s /tmp/royal-city-emblem.png
           for asset in IMG_1505 IMG_1506 IMG_1507 IMG_1508 IMG_1509 IMG_1510; do
             curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/assets/$asset.png" -o /tmp/$asset.png
             test -s /tmp/$asset.png

@@ -1,16 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 294 64" role="img" aria-labelledby="title">
-  <title id="title">Royal City — residential ecosystem</title>
-  <defs>
-    <linearGradient id="ground" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#17374c"/>
-      <stop offset="1" stop-color="#07182a"/>
-    </linearGradient>
-  </defs>
-  <rect x="2" y="4" width="56" height="56" rx="18" fill="url(#ground)" stroke="#cfba82" stroke-opacity=".58"/>
-  <circle cx="30" cy="32" r="21" fill="none" stroke="#8bcfc5" stroke-width="1" stroke-opacity=".72" stroke-dasharray="99 33" transform="rotate(-46 30 32)"/>
-  <path d="M19 44V21h9c6.5 0 9.5 2.9 9.5 7.4s-3.1 7.4-9.5 7.4h-9m10 0 10 8.2" fill="none" stroke="#f2efe5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="37.5" cy="21" r="2.2" fill="#d8c18a"/>
-  <circle cx="19" cy="44" r="2.2" fill="#83d2c5"/>
+  <title id="title">Royal City — official crown and wordmark</title>
+  <rect x="2" y="4" width="56" height="56" rx="18" fill="#f1f5f1" stroke="#cfba82" stroke-opacity=".58"/>
+  <image href="royal-city-emblem.png?v=20261020-9" x="5" y="5" width="50" height="54" preserveAspectRatio="xMidYMid meet"/>
   <text x="70" y="34" fill="#f5f2e9" font-family="Inter, Avenir Next, Segoe UI, sans-serif" font-size="27" font-weight="600" letter-spacing="-.85">Royal City</text>
   <text x="72" y="50" fill="#afc0d0" font-family="Inter, Avenir Next, Segoe UI, sans-serif" font-size="7.2" font-weight="700" letter-spacing="1.8">RESIDENTIAL ECOSYSTEM</text>
 </svg>
