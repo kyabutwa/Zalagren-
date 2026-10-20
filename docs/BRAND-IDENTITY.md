@@ -7,7 +7,7 @@ Royal City is a residential ecosystem for people, homes, communities and useful 
 ## Official source artwork
 
 - `web/royal-city-logo.png` is the unchanged official logo artwork from the Royal City source project (`public/brand/royal-city-logo-green.png`). It contains the original deep-green crown and stacked Royal City wordmark.
-- `web/royal-city-emblem.png` and the iOS `RoyalCityEmblem` image set are transparent crops of that crown, made only for compact placements. The web SVG lockups use that artwork beside the Royal City name.
+- `web/royal-city-emblem.png` and the iOS `RoyalCityEmblem` image set are transparent crops of that crown, made only for compact placements. The web header pairs this exact crop with the Royal City name.
 - Keep the source artwork intact. Do not redraw or recolor the crown; use the light backing tile on dark interface surfaces so the official green remains legible.
 - Supplied JPEGs remain source artwork. IMG_1510 is BeatHealth art; IMG_1505 is a retired predecessor-brand concept and is not the Royal City logo.
 

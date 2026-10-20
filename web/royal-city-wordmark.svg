@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 294 64" role="img" aria-labelledby="title">
-  <title id="title">Royal City — official crown and wordmark</title>
-  <rect x="2" y="4" width="56" height="56" rx="18" fill="#f1f5f1" stroke="#cfba82" stroke-opacity=".58"/>
-  <image href="royal-city-emblem.png?v=20261020-9" x="5" y="5" width="50" height="54" preserveAspectRatio="xMidYMid meet"/>
-  <text x="70" y="34" fill="#f5f2e9" font-family="Inter, Avenir Next, Segoe UI, sans-serif" font-size="27" font-weight="600" letter-spacing="-.85">Royal City</text>
-  <text x="72" y="50" fill="#afc0d0" font-family="Inter, Avenir Next, Segoe UI, sans-serif" font-size="7.2" font-weight="700" letter-spacing="1.8">RESIDENTIAL ECOSYSTEM</text>
-</svg>

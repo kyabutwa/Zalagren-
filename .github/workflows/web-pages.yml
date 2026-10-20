@@ -47,13 +47,10 @@ jobs:
           grep -q 'foundationPage' web/app.js
           grep -q 'securityPage' web/app.js
           grep -q 'ecosystemPage' web/app.js
-          grep -q 'royal-city-wordmark.svg' web/app.js
-          grep -q 'royal-city-emblem.svg' web/app.js
+          grep -q 'royal-city-emblem.png' web/app.js
           grep -q 'royal-city-platform-v1' web/app.js
           grep -q 'zalagren-demo' web/app.js
           test -f docs/ROYAL-CITY-PLATFORM-MIGRATION.md
-          test -s web/royal-city-wordmark.svg
-          test -s web/royal-city-emblem.svg
           test -s web/royal-city-logo.png
           test -s web/royal-city-emblem.png
           test -s ios/Zalagren/Assets.xcassets/RoyalCityEmblem.imageset/Contents.json
@@ -126,8 +123,6 @@ jobs:
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/app.js" | grep -qi "popstate"
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/styles.css" | grep -qi "safe-area-inset-bottom"
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/manifest.webmanifest" | grep -qi "Royal City"
-          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/royal-city-emblem.svg" | grep -qi "svg"
-          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/royal-city-wordmark.svg" | grep -qi "Royal City"
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/royal-city-logo.png" -o /tmp/royal-city-logo.png
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/royal-city-emblem.png" -o /tmp/royal-city-emblem.png
           test -s /tmp/royal-city-logo.png
