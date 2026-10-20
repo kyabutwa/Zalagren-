@@ -1,4 +1,4 @@
-name: Zalagren iOS Build
+name: Royal City iOS Build
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: zalagren-ios-${{ github.ref }}
+  group: royal-city-ios-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -62,4 +62,7 @@ jobs:
 
       - name: Verify device archive
         working-directory: ios
-        run: test -d build/Zalagren.xcarchive/Products/Applications/Zalagren.app
+        run: |
+          app_path=build/Zalagren.xcarchive/Products/Applications/Zalagren.app
+          test -d "$app_path"
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' "$app_path/Info.plist" | grep -qx 'Royal City'

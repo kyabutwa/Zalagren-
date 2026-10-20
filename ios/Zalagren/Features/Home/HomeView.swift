@@ -6,7 +6,7 @@ struct HomeView: View {
         VStack(spacing: 18) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Zalagren").font(.caption.weight(.semibold)).foregroundStyle(ZalagrenTheme.green)
+                    Text("Royal City").font(.caption.weight(.semibold)).foregroundStyle(ZalagrenTheme.green)
                     Text("Good to see you.").font(.largeTitle.bold())
                 }
                 Spacer()

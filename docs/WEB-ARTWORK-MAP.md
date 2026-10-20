@@ -4,7 +4,7 @@ The repository JPEGs were inspected during the web deployment workflow with Imag
 
 | Source | OCR / visual meaning | Web use |
 | --- | --- | --- |
-| IMG_1505.jpeg | Low-quality legacy Zalagren concept with fingerprint/script lettering | Retained source only; not used as primary identity |
+| IMG_1505.jpeg | Low-quality retired fingerprint/script concept from the predecessor brand | Retained source only; not used as primary identity |
 | IMG_1506.jpeg | MUSIC + TRANSACTIONS » COMMUNITY | Transactions / community artwork; retained as source artwork |
 | IMG_1507.jpeg | FOOD » DELIVERY » COMMUNITY | BeatFood |
 | IMG_1508.jpeg | ACCOMMODATION HOSPITALITY » COMMUNITY | BeatBnB |
@@ -13,4 +13,4 @@ The repository JPEGs were inspected during the web deployment workflow with Imag
 
 All six source JPEGs remain untouched. GitHub Pages derives PNGs at deployment time; the original files are never overwritten. IMG_1505 remains only for compatibility with the existing prepared-art pipeline.
 
-No service identity is inferred where the image text is insufficient. IMG_1506 is presented with its observed wording rather than being silently relabeled. The first-party `web/zalagren-wordmark.svg` and `web/zalagren-emblem.svg` are the source of truth for the platform identity and app icon.
+No service identity is inferred where the image text is insufficient. IMG_1506 is presented with its observed wording rather than being silently relabeled. The first-party `web/royal-city-wordmark.svg` and `web/royal-city-emblem.svg` are the source of truth for the platform identity and app icon.

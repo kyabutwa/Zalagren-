@@ -1,3 +1,3 @@
-# Zalagren Web
+# Royal City Web
 
-Inspectable web surface for the Zalagren ecosystem.
+Inspectable web surface for the Royal City ecosystem.

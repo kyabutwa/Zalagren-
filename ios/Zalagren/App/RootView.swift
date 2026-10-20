@@ -6,9 +6,9 @@ struct RootView: View {
         NavigationStack {
             currentView
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) { ZalagrenMark() }
+                    ToolbarItem(placement: .topBarLeading) { RoyalCityMark() }
                     ToolbarItemGroup(placement: .topBarTrailing) {
-                        Button { model.searchPresented = true } label: { Image(systemName: "magnifyingglass") }.accessibilityLabel("Search Zalagren")
+                        Button { model.searchPresented = true } label: { Image(systemName: "magnifyingglass") }.accessibilityLabel("Search Royal City")
                         Button { model.assistantPresented = true } label: { Image(systemName: "sparkles") }.accessibilityLabel("Open intelligence")
                         Menu { Button("Account") { model.select(.settings) }; Button("Settings") { model.select(.settings) } } label: { Image(systemName: "ellipsis") }.accessibilityLabel("More")
                     }

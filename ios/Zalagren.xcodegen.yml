@@ -15,4 +15,6 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.zalagren.ios
+        INFOPLIST_KEY_CFBundleDisplayName: Royal City
+        INFOPLIST_KEY_CFBundleName: Royal City
         GENERATE_INFOPLIST_FILE: YES

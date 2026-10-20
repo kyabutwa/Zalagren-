@@ -9,13 +9,13 @@ struct IntelligenceView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("CONSTANTYNA").font(.caption.bold()).foregroundStyle(ZalagrenTheme.tsavoOrange)
-                        Text("Governed Zalagren intelligence").font(.title2.bold())
-                        MessageCard(title: "CONSTANTYNA", text: "Explain Zalagren, research possibilities, compare options, propose useful solutions and services, and guide authorized actions. I do not grant authority or expose internal system code.")
+                        Text("Governed Royal City intelligence").font(.title2.bold())
+                        MessageCard(title: "CONSTANTYNA", text: "Explain Royal City, research possibilities, compare options, propose useful solutions and services, and guide authorized actions. I do not grant authority or expose internal system code.")
                         MessageCard(title: "GENESIS", text: "Turn observations and context into evidence-backed proposals. Protected execution still passes through Core authorization.")
                     }.padding()
                 }
                 HStack(alignment: .bottom, spacing: 8) {
-                    TextField("Ask anything about Zalagren…", text: $prompt, axis: .vertical)
+                    TextField("Ask anything about Royal City…", text: $prompt, axis: .vertical)
                         .padding(12).background(.quaternary, in: RoundedRectangle(cornerRadius: 18))
                     Button { listening.toggle() } label: {
                         Image(systemName: listening ? "waveform.circle.fill" : "mic.circle.fill")
@@ -117,7 +117,7 @@ struct SearchView: View {
             List {
                 Text(query.isEmpty ? "Search people, communities, places, services, opportunities and activity." : "Backend search connection pending.")
                     .foregroundStyle(.secondary)
-            }.searchable(text: $query, prompt: "Search Zalagren").navigationTitle("Search")
+            }.searchable(text: $query, prompt: "Search Royal City").navigationTitle("Search")
         }
     }
 }

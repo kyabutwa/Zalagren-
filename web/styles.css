@@ -28,7 +28,7 @@ button,input{font:inherit}button{-webkit-tap-highlight-color:transparent}
 .service-icon img{width:100%;height:100%;object-fit:contain;border-radius:12px}.mark{overflow:hidden}.mark img{width:100%;height:100%;object-fit:contain;border-radius:10px}
 .domain-strip{display:flex;gap:8px;overflow:auto;padding:4px 0 12px}.domain-strip .micro-pill{white-space:nowrap}
 
-/* ZALAGREN EXPERIENCE RESET — content-first, typography-led, mobile-native */
+/* ROYAL CITY EXPERIENCE RESET — content-first, typography-led, mobile-native */
 :root{
  --canvas:#071a33;--surface:#0b2444;--surface2:#0e2f55;--text:#fff;--muted:#b8c8d9;
  --green:#63d487;--orange:#f27a21;--line:rgba(255,255,255,.13);--glass:rgba(7,26,51,.72);
@@ -112,7 +112,7 @@ background:transparent!important;border:0!important;border-bottom:1px solid var(
 @media(min-width:701px){.home-intro{padding-top:70px}.home-title{font-size:82px}.home-command{max-width:780px}.home-section{max-width:780px}}
 
 
-/* ZALAGREN CONTRAST + CANONICAL LOGO CONTRACT */
+/* ROYAL CITY CONTRAST + CANONICAL LOGO CONTRACT */
 :root{
   --navy:#071a33;
   --navy-2:#0b2444;
@@ -181,7 +181,7 @@ input::placeholder,textarea::placeholder{color:#53657a!important;-webkit-text-fi
 .settings-row b{color:var(--green)!important;font-size:22px;font-weight:400}
 
 
-/* SERVICENOW-INSPIRED ZALAGREN WORKSPACE CONTRACT
+/* SERVICENOW-INSPIRED ROYAL CITY WORKSPACE CONTRACT
    Adopted patterns: focused workspace, contextual orientation, persistent shell,
    reusable data-driven surfaces, clear task hierarchy. Never copy ServiceNow branding. */
 .workspacebar{
@@ -229,7 +229,7 @@ input::placeholder,textarea::placeholder{color:#53657a!important;-webkit-text-fi
  .menu-brand img{width:84px;height:32px}
 }
 
-/* Zalagren x Royal City — editorial residential workspace */
+/* Royal City x Royal City — editorial residential workspace */
 :root{--rc-gold:#c7a66a;--rc-ivory:#f2ede4;--rc-mint:#86d5ad;--rc-line:rgba(234,226,210,.14);--rc-card:rgba(255,255,255,.045)}
 .residential-page{max-width:1320px;margin:auto;padding-bottom:100px!important;color:var(--rc-ivory)!important}
 .residential-hero{position:relative;overflow:hidden;min-height:530px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);align-items:center;gap:36px;padding:clamp(28px,6vw,76px);border:1px solid var(--rc-line);border-radius:34px;background:radial-gradient(ellipse at 85% 16%,rgba(199,166,106,.17),transparent 35%),radial-gradient(ellipse at 65% 100%,rgba(51,131,103,.18),transparent 44%),linear-gradient(135deg,#132a31 0%,#0d2029 55%,#111e2b 100%);box-shadow:0 32px 90px rgba(0,0,0,.25)}
@@ -248,7 +248,7 @@ input::placeholder,textarea::placeholder{color:#53657a!important;-webkit-text-fi
 @media(max-width:650px){.residential-page{padding-top:12px!important}.residential-hero{grid-template-columns:1fr;min-height:0;padding:28px 21px 18px;border-radius:25px}.residential-hero:after{inset:9px;border-radius:19px}.residential-page .page-title{font-size:54px!important}.residential-orbit{width:min(100%,270px);margin:10px auto 0}.orbit-core{width:105px;height:105px}.orbit-core span{font-size:31px}.orbit-node{width:55px;height:55px;font-size:17px}.node-home{left:calc(50% - 27px)}.node-community{left:calc(50% - 27px)}.node-people{top:calc(50% - 27px)}.node-service{top:calc(50% - 27px)}.residential-context{align-items:flex-start}.residential-context-change{width:100%;margin:3px 0 0;padding:0;text-align:left}.residential-trust-strip{justify-content:flex-start;gap:9px;padding:19px 5px 30px;font-size:9px}.residential-trust-strip i{width:12px}.residential-section-head{align-items:flex-start;flex-direction:column;margin-top:29px}.residential-section-head h2{font-size:32px}.residential-community-grid,.residential-feature-grid,.residential-service-grid{grid-template-columns:1fr}.residential-community-card{min-height:174px}.residential-feature-card{min-height:200px}.residential-service-card{min-height:285px}.residential-activity-row{gap:9px;padding:12px 10px}.activity-index{display:none}.activity-state{font-size:6px;padding:5px}.residential-disclaimer{padding:13px}.disclaimer-code{display:none}.grid,.grid.two,.grid.four{grid-template-columns:1fr!important}.card{padding:17px!important}}
 
 
-/* ZALAGREN 2026-10-04 VISUAL REBUILD
+/* ROYAL CITY 2026-10-04 VISUAL REBUILD
    Deliberately replaces the previous flat/text-heavy presentation with a
    single mobile-first workspace: persistent brand rail, real cards, clear
    platform hierarchy, and service identities used as identities. */
@@ -318,7 +318,7 @@ body{background:
 }
 .home-lede{max-width:680px!important;color:#d4dfeb!important}
 .home-intro:after{
-  content:"ZALAGREN";
+  content:"ROYAL CITY";
   display:grid;place-items:center;min-height:190px;border:1px solid var(--line);
   border-radius:28px;background:linear-gradient(145deg,rgba(98,213,138,.12),rgba(255,255,255,.035));
   color:var(--green);font-size:12px;font-weight:850;letter-spacing:.24em;
@@ -504,7 +504,7 @@ body{background:
 @keyframes menuRise{from{transform:translateY(18px);opacity:.78}to{transform:none;opacity:1}}
 @media(prefers-reduced-motion:reduce){.sheet-panel.menu-panel{animation:none!important}.menu-row,.menu-panel .close{transition:none!important}}
 
-/* ZALAGREN IDENTITY SYSTEM — architectural clarity, human-scale service, precise evidence */
+/* ROYAL CITY IDENTITY SYSTEM — architectural clarity, human-scale service, precise evidence */
 .brand .mark img{width:190px!important;height:50px!important;object-fit:contain!important;max-width:none!important;max-height:none!important}
 .menu-brand-emblem{width:42px!important;height:42px!important;flex:none;object-fit:contain!important;border-radius:13px}
 .menu-brand-copy small{letter-spacing:.06em}

@@ -1,16 +1,21 @@
 import SwiftUI
 
 enum ZalagrenTheme {
-    static let navy = Color(red: 0.03, green: 0.13, blue: 0.27)
-    static let green = Color(red: 0.16, green: 0.50, blue: 0.25)
-    static let tsavoOrange = Color(red: 0.90, green: 0.38, blue: 0.08)
+    static let navy = Color(red: 0.03, green: 0.10, blue: 0.18)
+    static let green = Color(red: 0.34, green: 0.69, blue: 0.65)
+    static let tsavoOrange = Color(red: 0.84, green: 0.75, blue: 0.55)
 }
-struct ZalagrenMark: View {
+struct RoyalCityMark: View {
     var body: some View {
         HStack(spacing: 8) {
-            Image(systemName: "circle.hexagongrid.fill").foregroundStyle(ZalagrenTheme.green)
-            Text("Zalagren").font(.headline.weight(.semibold)).foregroundStyle(ZalagrenTheme.green)
-        }.accessibilityElement(children: .combine).accessibilityLabel("Zalagren")
+            ZStack {
+                RoundedRectangle(cornerRadius: 10).fill(ZalagrenTheme.navy)
+                RoundedRectangle(cornerRadius: 10).stroke(Color(red: 0.81, green: 0.73, blue: 0.51).opacity(0.7), lineWidth: 0.8)
+                Circle().trim(from: 0.08, to: 0.78).stroke(Color(red: 0.55, green: 0.81, blue: 0.77), style: StrokeStyle(lineWidth: 0.8, lineCap: .round)).rotationEffect(.degrees(-48)).padding(3)
+                Text("R").font(.system(size: 17, weight: .medium, design: .serif)).foregroundStyle(.white)
+            }.frame(width: 29, height: 29)
+            Text("Royal City").font(.headline.weight(.semibold)).foregroundStyle(ZalagrenTheme.green)
+        }.accessibilityElement(children: .combine).accessibilityLabel("Royal City")
     }
 }
 struct ZalagrenCardModifier: ViewModifier {

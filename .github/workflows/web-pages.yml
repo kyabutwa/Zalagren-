@@ -1,4 +1,4 @@
-name: Zalagren Web
+name: Royal City Web
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: zalagren-web-platform
+  group: royal-city-web-platform
   cancel-in-progress: true
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
           test -f web/sw.js
           grep -q 'styles.css' web/index.html
           grep -q 'app.js' web/index.html
-          grep -Rqi 'Zalagren' web
+          grep -Rqi 'Royal City' web
           grep -Rqi 'CONSTANTYNA' web
           grep -Rqi 'GENESIS' web
           grep -Rqi 'BeatPay' web
@@ -47,10 +47,13 @@ jobs:
           grep -q 'foundationPage' web/app.js
           grep -q 'securityPage' web/app.js
           grep -q 'ecosystemPage' web/app.js
-          grep -q 'zalagren-wordmark.svg' web/app.js
-          grep -q 'zalagren-emblem.svg' web/app.js
-          test -s web/zalagren-wordmark.svg
-          test -s web/zalagren-emblem.svg
+          grep -q 'royal-city-wordmark.svg' web/app.js
+          grep -q 'royal-city-emblem.svg' web/app.js
+          grep -q 'royal-city-platform-v1' web/app.js
+          grep -q 'zalagren-demo' web/app.js
+          test -f docs/ROYAL-CITY-PLATFORM-MIGRATION.md
+          test -s web/royal-city-wordmark.svg
+          test -s web/royal-city-emblem.svg
           grep -q 'assets/IMG_1507.png' web/app.js
           grep -q 'assets/IMG_1508.png' web/app.js
           grep -q 'assets/IMG_1509.png' web/app.js
@@ -79,7 +82,7 @@ jobs:
       - name: Prepare uploaded image assets
         run: |
           mkdir -p web/assets
-          # Legacy and service artwork stays in the deployed artwork set. Zalagren's global identity is the
+          # Legacy and service artwork stays in the deployed artwork set. Royal City's global identity is the
           # first-party vector wordmark/emblem; IMG_1510 belongs to BeatHealth and IMG_1505 is retired artwork.
           convert IMG_1505.jpeg -alpha on -fuzz 8% -fill none -draw "color 0,0 floodfill" -strip web/assets/IMG_1505.png
 
@@ -116,12 +119,12 @@ jobs:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
           test -n "$PAGE_URL"
-          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL" | grep -qi "Zalagren"
+          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL" | grep -qi "Royal City"
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/app.js" | grep -qi "popstate"
           curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/styles.css" | grep -qi "safe-area-inset-bottom"
-          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/manifest.webmanifest" | grep -qi "Zalagren"
-          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/zalagren-emblem.svg" | grep -qi "svg"
-          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/zalagren-wordmark.svg" | grep -qi "Zalagren"
+          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/manifest.webmanifest" | grep -qi "Royal City"
+          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/royal-city-emblem.svg" | grep -qi "svg"
+          curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/royal-city-wordmark.svg" | grep -qi "Royal City"
           for asset in IMG_1505 IMG_1506 IMG_1507 IMG_1508 IMG_1509 IMG_1510; do
             curl --fail --silent --show-error --location --max-time 30 "$PAGE_URL/assets/$asset.png" -o /tmp/$asset.png
             test -s /tmp/$asset.png
