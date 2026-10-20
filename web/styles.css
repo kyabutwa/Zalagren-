@@ -757,3 +757,4 @@ body{background:
 .brand .mark{width:38px!important;height:38px!important;flex:none!important;border-radius:11px!important;background:#f1f5f1!important;overflow:hidden!important;padding:4px!important;box-sizing:border-box!important}
 .brand .mark img{width:100%!important;height:100%!important;object-fit:contain!important;max-width:none!important;max-height:none!important}
 .brand-name{color:#f5f2e9;font-family:Georgia,serif;font-size:20px;font-weight:600;letter-spacing:-.025em}
+.menu-brand .menu-brand-emblem{width:42px!important;height:42px!important;object-fit:contain!important}
