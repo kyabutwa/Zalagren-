@@ -91,7 +91,7 @@
     const crumb=routeLabel(route), context=state.participant.context||"Personal";
     document.getElementById("app").innerHTML =
       '<header class="top"><div class="topbar">'+
-      '<button class="nav-control menu-trigger" id="menuBtn" aria-label="Open Zalagren workspace menu"><span></span><span></span><span></span></button>'+
+      '<button class="nav-control menu-trigger" id="menuBtn" aria-label="Open Zalagren workspace menu" aria-haspopup="dialog" aria-expanded="false"><span></span><span></span><span></span></button>'+
       '<button class="brand" data-view="home" aria-label="Zalagren home"><span class="mark"><img src="assets/IMG_1510.png" alt="Zalagren logo" width="132" height="40" decoding="sync" fetchpriority="high"></span></button>'+
       '<button class="account-control" id="accountBtn" aria-label="Open My Zalagren"><span class="account-dot"></span><span>My Zalagren</span></button>'+
       '</div><div class="workspacebar">'+
@@ -255,14 +255,40 @@ function intelligence(){
     return '<section class="settings-page section first"><div class="settings-hero"><div><span class="eyebrow dark">MY ZALAGREN</span><h1 class="page-title">Everything about your Zalagren.</h1><p class="lead">One settings workspace for identity, access, privacy, intelligence, participation and experience. Preferences configure your experience; they never create authority.</p></div><span class="workspace-status"><i></i> PERSONAL CONTEXT</span></div><div class="settings-groups">'+groups.map((g,i)=>'<section class="settings-group"><div class="settings-group-head"><span class="settings-index">0'+(i+1)+'</span><div><span class="eyebrow dark">'+g[0]+'</span><h2>'+g[1]+'</h2><p>'+g[2]+'</p></div></div><button class="settings-row"><span><strong>'+g[3]+'</strong><small>Open this unified settings area</small></span><b>›</b></button></section>').join('')+'</div><div class="callout compact"><h3>Authority stays separate.</h3><p>Authentication, subscription, relationship and preference settings never become consequential authorization by themselves.</p></div></section>';
   }
 
+  let menuReturnFocus=null;
   function openMenu(){
-    const s=document.getElementById("sheet"); s.hidden=false;
-    s.innerHTML='<div class="sheet-backdrop" id="sheetClose"></div><div class="sheet-panel"><div class="sheet-grabber"></div><div class="menu-brand"><img src="assets/IMG_1510.png" alt="Zalagren logo"><span><span class="eyebrow dark">ZALAGREN</span><small>Workspace</small></span></div><div class="section-head"><div><h2>Menu</h2></div><button class="close" id="sheetCloseBtn">×</button></div>'+
-      '<button class="menu-row" data-route="residential"><strong>Royal City residential</strong><span>Home, community operations and residential services</span>›</button><button class="menu-row" data-route="foundation"><strong>Platform foundation</strong><span>Identity, account, participant, places, organizations</span>›</button><button class="menu-row" data-route="ecosystem"><strong>Full ecosystem workspace</strong><span>People, communities, services and intelligence</span>›</button><button class="menu-row" data-route="people"><strong>Participant & contexts</strong><span>Relationships and active context</span>›</button><button class="menu-row" data-route="services"><strong>Services</strong><span>Needs, capabilities and governed outcomes</span>›</button><button class="menu-row" data-route="activity"><strong>Activity & evidence</strong><span>Trace the governed lifecycle</span>›</button><button class="menu-row" data-route="security"><strong>Security & trust</strong><span>Authorization, privacy and failure states</span>›</button><button class="menu-row" data-route="settings"><strong>My Zalagren settings</strong><span>Account, identity, privacy, voice and preferences</span>›</button></div>';
-    document.getElementById("sheetClose").onclick=closeMenu; document.getElementById("sheetCloseBtn").onclick=closeMenu;
-    s.querySelectorAll("[data-route]").forEach(b=>b.onclick=()=>{closeMenu();navigate(b.dataset.route);});
+    const s=document.getElementById("sheet"); if(!s||!s.hidden)return;
+    menuReturnFocus=document.activeElement;
+    document.getElementById("menuBtn")?.setAttribute("aria-expanded","true");
+    const current=readRoute().view;
+    const groups=[
+      {label:"YOUR ZALAGREN",items:[
+        ["home","⌂","Home","Your personal platform overview"],
+        ["residential","⌂","Royal City Residential","Home, community life and resident services"],
+        ["people","◎","People & contexts","Participants, relationships and communities"],
+        ["community","⌖","Community space","Open your selected community context"],
+        ["services","◇","Services","Discover capabilities and service providers"]
+      ]},
+      {label:"PLATFORM",items:[
+        ["intelligence","✦","Intelligence","CONSTANTYNA and governed platform intelligence"],
+        ["activity","◷","Activity & evidence","Intent, proposals, actions and evidence"],
+        ["lifecycle","⟲","Execution lifecycle","Follow a request through governed stages"],
+        ["foundation","◈","Platform foundation","Identity, places, organizations and authority"],
+        ["security","⬡","Security & trust","Privacy, access and platform safeguards"],
+        ["ecosystem","↗","Explore the ecosystem","See how Zalagren works as one platform"]
+      ]},
+      {label:"PERSONAL",items:[["settings","⚙","My Zalagren","Account, identity and experience settings"]]}
+    ];
+    const groupMarkup=groups.map(g=>'<section class="menu-group" aria-label="'+esc(g.label)+'"><h3>'+esc(g.label)+'</h3><div>'+g.items.map(([route,icon,label,detail])=>'<button class="menu-row'+(current===route?' is-current':'')+'" data-menu-route="'+route+'"'+(current===route?' aria-current="page"':'')+'><span class="menu-row-icon" aria-hidden="true">'+icon+'</span><span class="menu-row-copy"><strong>'+esc(label)+'</strong><small>'+esc(detail)+'</small></span><span class="menu-row-arrow" aria-hidden="true">›</span></button>').join("")+'</div></section>').join("");
+    s.hidden=false;
+    s.innerHTML='<button class="sheet-backdrop" id="sheetClose" aria-label="Close workspace menu" tabindex="-1"></button><aside class="sheet-panel menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuTitle"><div class="menu-topline"><div class="menu-brand"><img src="assets/IMG_1510.png" alt="Zalagren"><span><span class="eyebrow dark">ONE CONNECTED PLATFORM</span><small>Workspace navigation</small></span></div><button class="close" id="sheetCloseBtn" aria-label="Close menu">×</button></div><div class="menu-intro"><span class="eyebrow dark">ZALAGREN WORKSPACE</span><h2 id="menuTitle">Go where you need.</h2><p>One identity. Every context, service and platform tool in one place.</p></div><nav class="menu-navigation" aria-label="Workspace navigation">'+groupMarkup+'</nav><div class="menu-footer"><span class="menu-footer-dot"></span><span>One platform · governed by context and evidence</span></div></aside>';
+    document.getElementById("sheetClose").onclick=closeMenu;
+    document.getElementById("sheetCloseBtn").onclick=closeMenu;
+    s.querySelectorAll("[data-menu-route]").forEach(b=>b.onclick=()=>{const route=b.dataset.menuRoute;closeMenu();navigate(route);});
+    s.onkeydown=e=>{if(e.key==="Escape"){e.preventDefault();closeMenu();return;}if(e.key==="Tab"){const focusable=[...s.querySelectorAll('button:not([disabled]):not(#sheetClose)')];const first=focusable[0],last=focusable[focusable.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}};
+    s.querySelector("[data-menu-route]")?.focus();
   }
-  function closeMenu(){const s=document.getElementById("sheet");if(s){s.hidden=true;s.innerHTML="";}}
+  function closeMenu(){const s=document.getElementById("sheet");if(s&&!s.hidden){s.hidden=true;s.innerHTML="";s.onkeydown=null;document.getElementById("menuBtn")?.setAttribute("aria-expanded","false");menuReturnFocus?.focus?.();menuReturnFocus=null;}}
 
   function bind(route){
     document.querySelectorAll("[data-route]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.route)));
