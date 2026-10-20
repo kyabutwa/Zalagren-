@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Zalagren emblem</title>
+  <defs>
+    <linearGradient id="plate" x1=".12" y1=".08" x2=".9" y2=".94">
+      <stop offset="0" stop-color="#17364c"/>
+      <stop offset="1" stop-color="#08192b"/>
+    </linearGradient>
+  </defs>
+  <rect x="1.5" y="1.5" width="61" height="61" rx="19" fill="url(#plate)" stroke="#cfba82" stroke-opacity=".48"/>
+  <circle cx="32" cy="32" r="23" fill="none" stroke="#8bcfc5" stroke-width="1.15" stroke-opacity=".58" stroke-dasharray="111 34" transform="rotate(-48 32 32)"/>
+  <path d="M20 22h24L20 42h24" fill="none" stroke="#f2efe5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="44" cy="22" r="2.8" fill="#d8c18a"/>
+  <circle cx="20" cy="42" r="2.8" fill="#83d2c5"/>
+</svg>

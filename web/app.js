@@ -24,9 +24,10 @@
     ["Home Services","Cleaning, repair, laundry and property maintenance coordination.","SUPPORTED"]
   ];
 
-  // Global brand identity is always IMG_1505. Supplied artwork is assigned to a service only
-  // when its observed meaning is unambiguous; it is never exposed as a generic gallery.
+  // Global identity uses the first-party Zalagren SVG system. Supplied artwork is assigned to
+  // a service only when its observed meaning is unambiguous; it is never a generic gallery.
   const serviceIdentity = {
+    BeatHealth:{src:"assets/IMG_1510.png",alt:"BeatHealth service identity"},
     BeatFood:{src:"assets/IMG_1507.png",alt:"BeatFood service identity"},
     BeatBnB:{src:"assets/IMG_1508.png",alt:"BeatBnB service identity"},
     BeatGenzi:{src:"assets/IMG_1509.png",alt:"BeatGenzi service identity"}
@@ -34,6 +35,25 @@
   const serviceSymbols = {
     BeatHealth:"✚", BeatMarket:"◇", BeatRide:"↗", BeatGuardian:"◉", BeatUtilities:"⌁", "Home Services":"⌂"
   };
+  const platformIconPaths={
+    home:'<path d="m3.8 11.1 8.2-6.5 8.2 6.5M5.8 9.7v9.1h12.4V9.7M9.4 18.8v-5.5h5.2v5.5"/>',
+    residential:'<path d="M4.5 19V9.2L12 5l7.5 4.2V19M8.5 19v-5.6h7V19M3 19h18M8 9.8h.01M16 9.8h.01"/>',
+    people:'<circle cx="9" cy="8" r="3"/><path d="M3.7 19v-1.1a5.3 5.3 0 0 1 10.6 0V19zM15.2 5.2a3 3 0 0 1 0 5.8M17 13.1a4.6 4.6 0 0 1 3.3 4.4v1.2h-3.1"/>',
+    community:'<circle cx="12" cy="8" r="3"/><circle cx="5" cy="15" r="2"/><circle cx="19" cy="15" r="2"/><path d="M6.4 12.5 9.8 10M14.2 10l3.4 2.5M8 19h8M12 11v6"/>',
+    services:'<path d="m12 3.5 8.5 8.5-8.5 8.5L3.5 12z"/><path d="M12 7.5v9M7.5 12h9"/>',
+    intelligence:'<path d="M12 3.5v4M12 16.5v4M3.5 12h4M16.5 12h4M6 6l2.8 2.8M15.2 15.2 18 18M18 6l-2.8 2.8M8.8 15.2 6 18"/><circle cx="12" cy="12" r="4.2"/>',
+    activity:'<path d="M4 19V5M4 19h16M7 15l3-4 3 2 5-7"/><circle cx="18" cy="6" r="1"/>',
+    lifecycle:'<path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 9a6.5 6.5 0 0 1 11-2L20 9M4 15l2.9 2a6.5 6.5 0 0 0 11-2"/>',
+    foundation:'<path d="M4 20h16M5.5 20V9l6.5-4 6.5 4v11M8.5 11.5v2M12 11.5v2M15.5 11.5v2M8.5 16v2M12 16v2M15.5 16v2"/>',
+    security:'<path d="M12 3.5 19 6v5.2c0 4.4-2.8 7.4-7 9.3-4.2-1.9-7-4.9-7-9.3V6z"/><path d="m8.7 12.1 2.1 2.1 4.6-4.7"/>',
+    payments:'<rect x="3.5" y="6" width="17" height="12" rx="2.5"/><path d="M3.5 10h17M7.5 14h3"/>',
+    ecosystem:'<circle cx="12" cy="12" r="8.5"/><ellipse cx="12" cy="12" rx="4" ry="8.5"/><path d="M3.8 9h16.4M3.8 15h16.4"/>',
+    settings:'<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="8" cy="18" r="2"/>',
+    evidence:'<path d="M6 3.5h8l4 4V20H6zM14 3.5V8h4M9 12h6M9 15.5h6"/><path d="m9 18 1.4 1.4 3-3"/>'
+  };
+  function platformIcon(name, className=""){
+    return '<svg class="platform-icon '+className+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(platformIconPaths[name]||platformIconPaths.ecosystem)+'</svg>';
+  }
   const foundation = [
     ["Identity","Legal / verified identity","One durable identity boundary."],["Account","Zalagren account","Authentication container; not a role."],["Subscription","Participation plan","Commercial relationship, not permission."],["Entitlement","Available capability","What the account can access by plan."],["Participant","Canonical actor","One participant can hold many relationships."],["People","Human relationships","Resident, owner, worker, provider, visitor and more."],["Communities","Participation coordinators","Community context without owning platform services."],["Relationship","Participant ↔ context","Describes connection; never silently authorizes."],["Context","Where / why / when","Makes capability relevant."],["Place","Site → phase → building → unit","Canonical physical hierarchy."],["Organization","Institutional entity","Company, nonprofit, government, cooperative or other."],["Provider","Operational service identity","Can fulfil a service; provider status is not authority."],["Capability","What can be done","A declared ability, not permission."],["Authorization","Explicit authority","Contextual, effective, revocable and fail-closed."]
   ];
@@ -92,7 +112,7 @@
     document.getElementById("app").innerHTML =
       '<header class="top"><div class="topbar">'+
       '<button class="nav-control menu-trigger" id="menuBtn" aria-label="Open Zalagren workspace menu" aria-haspopup="dialog" aria-expanded="false"><span></span><span></span><span></span></button>'+
-      '<button class="brand" data-view="home" aria-label="Zalagren home"><span class="mark"><img src="assets/IMG_1510.png" alt="Zalagren logo" width="132" height="40" decoding="sync" fetchpriority="high"></span></button>'+
+      '<button class="brand" data-view="home" aria-label="Zalagren home"><span class="mark"><img src="zalagren-wordmark.svg" alt="Zalagren" width="190" height="50" decoding="sync" fetchpriority="high"></span></button>'+
       '<button class="account-control" id="accountBtn" aria-label="Open My Zalagren"><span class="account-dot"></span><span>My Zalagren</span></button>'+
       '</div><div class="workspacebar">'+
       '<button class="workspace-context" data-view="people"><span class="workspace-pulse"></span><strong>'+esc(context)+'</strong><span class="workspace-separator">·</span><span>'+esc(crumb.join(" / "))+'</span></button>'+
@@ -127,12 +147,19 @@ function foundationPage(){
   }
   function home(){
     const recent=state.events.slice(-3).reverse();
+    const spaces=[
+      ["residential","residential","Royal City Residential","Home, shared spaces and the services around community life.",true],
+      ["people","people","People & contexts","Carry one identity across the places you participate."],
+      ["services","services","Services","Discover capabilities, providers and clear service boundaries."],
+      ["activity","evidence","Operations & evidence","Follow each request and see what has actually happened."],
+      ["foundation","foundation","Platform foundation","The shared model for identity, place and authority."],
+      ["intelligence","intelligence","CONSTANTYNA","Ask, understand and consider the next step."]
+    ];
     return '<section class="home-surface">'+
-      '<div class="home-intro"><div><span class="eyebrow">A NEW BEGINNING</span><h1 class="home-title">Your identity.<br>Your world.<br><em>One ecosystem.</em></h1><p class="home-lede">One platform for people and communities — connecting places, needs, capabilities, authority and resources without fragmenting your identity.</p></div></div>'+
-      '<div class="home-command"><button class="command-primary" data-route="intelligence"><span class="command-symbol">✦</span><span><b>Ask CONSTANTYNA</b><small>Understand, compare, discover and propose.</small></span><span>›</span></button><button class="command-row residential-command" data-route="residential"><span>Royal City Residential</span><small>Home, community operations and services</small><span>›</span></button><button class="command-row" data-route="ecosystem"><span>Explore Zalagren</span><small>See the platform as one connected world</small><span>›</span></button><button class="command-row" data-route="services"><span>Services</span><small>Turn a need into a governed outcome</small><span>›</span></button><button class="command-row" data-route="community"><span>Your world</span><small>Communities, places and contexts</small><span>›</span></button><button class="command-row" data-route="activity"><span>Activity</span><small>Intent → proposal → authorization → action → evidence</small><span>›</span></button></div>'+
-      '<section class="home-section"><div class="section-label"><span>CORE PRINCIPLE</span><i>01</i></div><p class="principle">No authorization <strong>→</strong> no consequential action.</p><p class="home-copy">GENESIS can observe and propose. CONSTANTYNA can explain and help. Neither can grant authority to itself.</p></section>'+
-      '<section class="home-section"><div class="section-label"><span>RECENT ACTIVITY</span><i>'+String(recent.length).padStart(2,"0")+'</i></div>'+
-      (recent.length?recent.map(e=>'<button class="activity-line" data-route="activity"><span class="activity-dot"></span><span><b>'+esc(e.title)+'</b><small>'+esc(e.detail)+'</small></span><span>›</span></button>').join(""):'<div class="quiet-line">Nothing has happened yet. Zalagren will show consequential activity here only when it is actually recorded.</div>')+'</section>'+
+      '<div class="home-hero"><div class="home-hero-copy"><div class="home-kicker"><span class="home-kicker-rule"></span><span>CONNECTED LIVING · ONE PLATFORM</span></div><h1 class="home-title">The world around you,<br><em>working as one.</em></h1><p class="home-lede">Zalagren brings people, communities and essential services into one shared platform — with clear context, accountable decisions and outcomes you can follow.</p><div class="home-hero-actions"><button class="home-primary-action" data-route="residential"><span>Explore Royal City</span><b>↗</b></button><button class="home-secondary-action" data-route="ecosystem">See how the platform works <span>→</span></button></div><div class="home-hero-meta"><span>PEOPLE</span><i></i><span>PLACES</span><i></i><span>SERVICES</span><i></i><span>PROOF</span></div></div>'+
+      '<aside class="home-model-card"><div class="model-card-top"><span>THE ZALAGREN MODEL</span><span>01 — 04</span></div><div class="model-emblem-wrap"><span class="model-orbit model-orbit-one"></span><span class="model-orbit model-orbit-two"></span><img src="zalagren-emblem.svg" alt=""></div><div class="model-flow">'+[["01","people","Identity","One participant"],["02","foundation","Place","A clear context"],["03","services","Capability","A defined service"],["04","evidence","Outcome","An accountable record"]].map(x=>'<div class="model-flow-row"><span class="model-flow-index">'+x[0]+'</span><span class="model-flow-icon">'+platformIcon(x[1])+'</span><span class="model-flow-copy"><strong>'+x[2]+'</strong><small>'+x[3]+'</small></span><span class="model-flow-node"></span></div>').join("")+'</div><div class="model-card-foot"><span>CONTEXT → AUTHORITY → EVIDENCE</span><span class="model-foot-rule"></span></div></aside></div>'+
+      '<section class="home-spaces"><div class="home-section-heading"><div><span class="eyebrow">THE PLATFORM</span><h2>Everyday life, better connected.</h2><p>Choose a space to begin. Your context and identity travel with you.</p></div><span class="home-section-code">Z / 01</span></div><div class="home-space-grid">'+spaces.map(([route,icon,title,detail,featured])=>'<button class="home-space-card'+(featured?' is-featured':'')+'" data-route="'+route+'"><span class="space-card-icon">'+platformIcon(icon)+'</span><span class="space-card-copy"><span class="space-card-index">'+(featured?'RESIDENTIAL · ROYAL CITY':'ZALAGREN WORKSPACE')+'</span><strong>'+title+'</strong><small>'+detail+'</small></span><span class="space-card-arrow" aria-hidden="true">↗</span></button>').join("")+'</div></section>'+
+      '<div class="home-briefing-grid"><section class="home-principle-panel"><div class="home-panel-kicker"><span class="panel-index">01</span><span>THE AUTHORITY STANDARD</span></div><h2>A proposal is not permission.</h2><p>Every consequential step needs the right authority, in the right context, with a record that can be checked.</p><button data-route="security">How trust works <span>→</span></button></section><section class="home-activity-panel"><div class="home-panel-heading"><div><span class="eyebrow">PLATFORM RECORD</span><h2>Recent activity</h2></div><button data-route="activity" aria-label="Open activity">View all <span>→</span></button></div><div class="home-activity-content">'+(recent.length?recent.map(e=>'<button class="home-activity-row" data-route="activity"><span class="activity-dot"></span><span><strong>'+esc(e.title)+'</strong><small>'+esc(e.detail)+'</small></span><span>›</span></button>').join(""):'<div class="home-activity-empty"><span class="activity-empty-mark">'+platformIcon("activity")+'</span><span><strong>No platform activity yet</strong><small>Recorded requests and decisions will appear here.</small></span></div>')+'</div></section></div>'+
       '</section>';
   }
 
@@ -167,10 +194,10 @@ function intelligence(){
     const selected=state.selectedCommunity||communities[0].name;
     const requests=Array.isArray(state.residentialRequests)?state.residentialRequests:[];
     const serviceCards=[
-      ["BeatAccess","Visits & entry","Coordinate a visit request with the right host and community context.","No gate control connected","↗"],
-      ["BeatBooking","Shared places","Request a time for a community facility or shared place.","Availability needs community data","▦"],
-      ["BeatUtilities","Home services","Route a water, power or maintenance issue to the responsible team.","No provider link in this preview","⌁"],
-      ["BeatPay","Residential payments","Review an authorized request and its payment status.","No money movement connected","◇"]
+      ["BeatAccess","Visits & entry","Coordinate a visit request with the right host and community context.","No gate control connected","security"],
+      ["BeatBooking","Shared places","Request a time for a community facility or shared place.","Availability needs community data","community"],
+      ["BeatUtilities","Home services","Route a water, power or maintenance issue to the responsible team.","No provider link in this preview","foundation"],
+      ["BeatPay","Residential payments","Review an authorized request and its payment status.","No money movement connected","payments"]
     ];
     return '<section class="section first residential-page"><div class="residential-hero"><div class="residential-hero-copy"><span class="eyebrow">ZALAGREN · RESIDENTIAL</span><p class="residential-kicker">ROYAL CITY WORKSPACE</p><h1 class="page-title">Home life,<br><em>working together.</em></h1><p class="lead">A residential experience within Zalagren: people, homes, community teams and services brought together with clear context and permission.</p><div class="residential-context"><span class="context-pulse"></span><span>ACTIVE COMMUNITY</span><strong>'+esc(selected)+'</strong><button class="residential-context-change" data-residential-scroll="communities">Change community <b>↓</b></button></div></div><div class="residential-orbit" aria-label="One residential network connecting people, homes, communities and services"><div class="orbit-ring"></div><div class="orbit-core"><span>RC</span><small>RESIDENTIAL<br>NETWORK</small></div><span class="orbit-node node-home">⌂<small>HOME</small></span><span class="orbit-node node-people">◉<small>PEOPLE</small></span><span class="orbit-node node-community">▦<small>COMMUNITY</small></span><span class="orbit-node node-service">✳<small>SERVICES</small></span></div></div>'+
       '<div class="residential-trust-strip"><span><b>01</b> One participant identity</span><i></i><span><b>02</b> Community-scoped context</span><i></i><span><b>03</b> Permission before action</span></div>'+
@@ -263,25 +290,25 @@ function intelligence(){
     const current=readRoute().view;
     const groups=[
       {label:"YOUR ZALAGREN",items:[
-        ["home","⌂","Home","Your personal platform overview"],
-        ["residential","⌂","Royal City Residential","Home, community life and resident services"],
-        ["people","◎","People & contexts","Participants, relationships and communities"],
-        ["community","⌖","Community space","Open your selected community context"],
-        ["services","◇","Services","Discover capabilities and service providers"]
+        ["home","home","Home","Your personal platform overview"],
+        ["residential","residential","Royal City Residential","Home, community life and resident services"],
+        ["people","people","People & contexts","Participants, relationships and communities"],
+        ["community","community","Community space","Open your selected community context"],
+        ["services","services","Services","Discover capabilities and service providers"]
       ]},
       {label:"PLATFORM",items:[
-        ["intelligence","✦","Intelligence","CONSTANTYNA and governed platform intelligence"],
-        ["activity","◷","Activity & evidence","Intent, proposals, actions and evidence"],
-        ["lifecycle","⟲","Execution lifecycle","Follow a request through governed stages"],
-        ["foundation","◈","Platform foundation","Identity, places, organizations and authority"],
-        ["security","⬡","Security & trust","Privacy, access and platform safeguards"],
-        ["ecosystem","↗","Explore the ecosystem","See how Zalagren works as one platform"]
+        ["intelligence","intelligence","Intelligence","CONSTANTYNA and governed platform intelligence"],
+        ["activity","activity","Activity & evidence","Intent, proposals, actions and evidence"],
+        ["lifecycle","lifecycle","Execution lifecycle","Follow a request through governed stages"],
+        ["foundation","foundation","Platform foundation","Identity, places, organizations and authority"],
+        ["security","security","Security & trust","Privacy, access and platform safeguards"],
+        ["ecosystem","ecosystem","Explore the ecosystem","See how Zalagren works as one platform"]
       ]},
-      {label:"PERSONAL",items:[["settings","⚙","My Zalagren","Account, identity and experience settings"]]}
+      {label:"PERSONAL",items:[["settings","settings","My Zalagren","Account, identity and experience settings"]]}
     ];
-    const groupMarkup=groups.map(g=>'<section class="menu-group" aria-label="'+esc(g.label)+'"><h3>'+esc(g.label)+'</h3><div>'+g.items.map(([route,icon,label,detail])=>'<button class="menu-row'+(current===route?' is-current':'')+'" data-menu-route="'+route+'"'+(current===route?' aria-current="page"':'')+'><span class="menu-row-icon" aria-hidden="true">'+icon+'</span><span class="menu-row-copy"><strong>'+esc(label)+'</strong><small>'+esc(detail)+'</small></span><span class="menu-row-arrow" aria-hidden="true">›</span></button>').join("")+'</div></section>').join("");
+    const groupMarkup=groups.map(g=>'<section class="menu-group" aria-label="'+esc(g.label)+'"><h3>'+esc(g.label)+'</h3><div>'+g.items.map(([route,icon,label,detail])=>'<button class="menu-row'+(current===route?' is-current':'')+'" data-menu-route="'+route+'"'+(current===route?' aria-current="page"':'')+'><span class="menu-row-icon">'+platformIcon(icon)+'</span><span class="menu-row-copy"><strong>'+esc(label)+'</strong><small>'+esc(detail)+'</small></span><span class="menu-row-arrow" aria-hidden="true">›</span></button>').join("")+'</div></section>').join("");
     s.hidden=false;
-    s.innerHTML='<button class="sheet-backdrop" id="sheetClose" aria-label="Close workspace menu" tabindex="-1"></button><aside class="sheet-panel menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuTitle"><div class="menu-topline"><div class="menu-brand"><span class="menu-brand-mark" aria-hidden="true">Z</span><span class="menu-brand-copy"><strong>Zalagren</strong><small>Workspace navigation</small></span></div><span class="menu-edition">ONE CONNECTED PLATFORM</span><button class="close" id="sheetCloseBtn" aria-label="Close menu">×</button></div><div class="menu-intro"><span class="eyebrow dark">ZALAGREN WORKSPACE</span><h2 id="menuTitle">Go where you need.</h2><p>One identity. Every context, service and platform tool in one place.</p></div><nav class="menu-navigation" aria-label="Workspace navigation">'+groupMarkup+'</nav><div class="menu-footer"><span class="menu-footer-dot"></span><span>One platform · governed by context and evidence</span></div></aside>';
+    s.innerHTML='<button class="sheet-backdrop" id="sheetClose" aria-label="Close workspace menu" tabindex="-1"></button><aside class="sheet-panel menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuTitle"><div class="menu-topline"><div class="menu-brand"><img class="menu-brand-emblem" src="zalagren-emblem.svg" alt=""><span class="menu-brand-copy"><strong>Zalagren</strong><small>People · places · purpose</small></span></div><span class="menu-edition">ONE CONNECTED PLATFORM</span><button class="close" id="sheetCloseBtn" aria-label="Close menu">×</button></div><div class="menu-intro"><span class="eyebrow dark">ZALAGREN WORKSPACE</span><h2 id="menuTitle">Go where you need.</h2><p>One identity. Every context, service and platform tool in one place.</p></div><nav class="menu-navigation" aria-label="Workspace navigation">'+groupMarkup+'</nav><div class="menu-footer"><span class="menu-footer-dot"></span><span>One platform · governed by context and evidence</span></div></aside>';
     document.getElementById("sheetClose").onclick=closeMenu;
     document.getElementById("sheetCloseBtn").onclick=closeMenu;
     s.querySelectorAll("[data-menu-route]").forEach(b=>b.onclick=()=>{const route=b.dataset.menuRoute;closeMenu();navigate(route);});

@@ -4,13 +4,13 @@ The repository JPEGs were inspected during the web deployment workflow with Imag
 
 | Source | OCR / visual meaning | Web use |
 | --- | --- | --- |
-| IMG_1505.jpeg | IDENTITY + ACCESS | Shared Platform Core / Identity |
+| IMG_1505.jpeg | Low-quality legacy Zalagren concept with fingerprint/script lettering | Retained source only; not used as primary identity |
 | IMG_1506.jpeg | MUSIC + TRANSACTIONS » COMMUNITY | Transactions / community artwork; retained as source artwork |
 | IMG_1507.jpeg | FOOD » DELIVERY » COMMUNITY | BeatFood |
 | IMG_1508.jpeg | ACCOMMODATION HOSPITALITY » COMMUNITY | BeatBnB |
 | IMG_1509.jpeg | CONNECT + EMPOWER » GENERATION | BeatGenzi |
-| IMG_1510.jpeg | No reliable OCR text; retained as primary Zalagren artwork | Zalagren brand mark / web app icon |
+| IMG_1510.jpeg | BeatHealth name and medical symbol | BeatHealth service artwork |
 
-All six source JPEGs remain untouched. GitHub Pages derives transparent PNGs at deployment time by removing the connected background. The original files are never overwritten.
+All six source JPEGs remain untouched. GitHub Pages derives PNGs at deployment time; the original files are never overwritten. IMG_1505 remains only for compatibility with the existing prepared-art pipeline.
 
-No service identity is inferred where the image text is insufficient. IMG_1506 is therefore presented with its observed wording rather than being silently relabeled.
+No service identity is inferred where the image text is insufficient. IMG_1506 is presented with its observed wording rather than being silently relabeled. The first-party `web/zalagren-wordmark.svg` and `web/zalagren-emblem.svg` are the source of truth for the platform identity and app icon.
