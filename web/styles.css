@@ -734,6 +734,8 @@ body{background:
 .settings-row small{display:block!important;color:#607287!important;margin-top:3px!important}
 .settings-row b{color:var(--green-deep)!important;font-size:25px!important}
 .menu-brand img{object-fit:contain!important}
+.settings-row-note{cursor:default!important}
+.settings-note-badge{flex:none;padding:6px 8px;border:1px solid #dfe7e7;border-radius:8px;color:#637889;font-size:8px;font-weight:800;letter-spacing:.08em;white-space:nowrap}
 @media(max-width:700px){
   .top{top:calc(env(safe-area-inset-top) + 8px)!important;left:9px!important;right:9px!important}
   .topbar{height:62px!important;grid-template-columns:48px 1fr 112px!important;border-radius:22px!important}

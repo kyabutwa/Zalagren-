@@ -274,29 +274,14 @@ function intelligence(){
   }
 
   function settings(){
-    const rows=[
-      ["Account","Your single Royal City account and participant boundary."],
-      ["Identity","Legal / verified identity and verification state."],
-      ["Security & access","Authentication, devices, sessions and authorization controls."],
-      ["Privacy & data","Purpose, sharing, retention, deletion and export."],
-      ["Notifications","Participant-controlled alerts and activity preferences."],
-      ["Voice & intelligence","CONSTANTYNA voice input/output and intelligence preferences."],
-      ["Appearance","Interface density, motion and display preferences."],
-      ["Communities","Your community relationships and active contexts."],
-      ["Services & entitlements","Available capabilities and participation plans."]
-    ];
-    return '<section class="section first"><span class="eyebrow dark">MY ROYAL CITY</span><h1 class="page-title">One place for your Royal City settings.</h1><p class="lead">Account, identity, access, privacy, intelligence and participation controls belong to one settings surface. A setting changes preference or configuration; it never silently grants authorization.</p><div class="settings-list">'+rows.map(x=>'<button class="settings-row"><span><strong>'+x[0]+'</strong><small>'+x[1]+'</small></span><b>›</b></button>').join('')+'</div><div class="callout compact"><h3>Authority stays separate.</h3><p>Authentication, subscription, relationship and preference settings never become consequential authorization by themselves.</p></div></section>';
-  }
-
-  function settings(){
     const groups=[
-      ["ACCOUNT","Account","Your single Royal City account, participant boundary and identity state.","Account · Identity"],
-      ["ACCESS","Security & access","Authentication, devices, sessions, privacy and authorization controls.","Security · Privacy & data"],
-      ["INTELLIGENCE","Voice & intelligence","CONSTANTYNA voice input/output, intelligence preferences and interaction controls.","Voice · Intelligence"],
-      ["PARTICIPATION","Communities & services","Your community relationships, active contexts, capabilities and entitlements.","Communities · Services & entitlements"],
-      ["EXPERIENCE","Appearance & notifications","Interface density, motion, display and participant-controlled notifications.","Appearance · Notifications"]
+      ["ACCOUNT","Account","Your Royal City participant boundary and identity state.",[["Account · Identity","people"]]],
+      ["ACCESS","Security & access","Authentication, devices, sessions, privacy and authorization controls.",[["Security · Privacy & data","security"]]],
+      ["INTELLIGENCE","Voice & intelligence","CONSTANTYNA voice input/output, intelligence preferences and interaction controls.",[["Voice · Intelligence","intelligence"]]],
+      ["PARTICIPATION","Communities & services","Your community relationships, active contexts, capabilities and entitlements.",[["Communities","community"],["Services & entitlements","services"]]],
+      ["EXPERIENCE","Appearance & notifications","Appearance preferences and notification delivery are not connected in this preview.",null]
     ];
-    return '<section class="settings-page section first"><div class="settings-hero"><div><span class="eyebrow dark">MY ROYAL CITY</span><h1 class="page-title">Everything about your Royal City.</h1><p class="lead">One settings workspace for identity, access, privacy, intelligence, participation and experience. Preferences configure your experience; they never create authority.</p></div><span class="workspace-status"><i></i> PERSONAL CONTEXT</span></div><div class="settings-groups">'+groups.map((g,i)=>'<section class="settings-group"><div class="settings-group-head"><span class="settings-index">0'+(i+1)+'</span><div><span class="eyebrow dark">'+g[0]+'</span><h2>'+g[1]+'</h2><p>'+g[2]+'</p></div></div><button class="settings-row"><span><strong>'+g[3]+'</strong><small>Open this unified settings area</small></span><b>›</b></button></section>').join('')+'</div><div class="callout compact"><h3>Authority stays separate.</h3><p>Authentication, subscription, relationship and preference settings never become consequential authorization by themselves.</p></div></section>';
+    return '<section class="settings-page section first"><div class="settings-hero"><div><span class="eyebrow dark">MY ROYAL CITY</span><h1 class="page-title">Everything about your Royal City.</h1><p class="lead">One settings workspace for identity, access, privacy, intelligence, participation and experience. Preferences configure your experience; they never create authority.</p></div><span class="workspace-status"><i></i> PERSONAL CONTEXT</span></div><div class="settings-groups">'+groups.map((g,i)=>'<section class="settings-group"><div class="settings-group-head"><span class="settings-index">0'+(i+1)+'</span><div><span class="eyebrow dark">'+g[0]+'</span><h2>'+g[1]+'</h2><p>'+g[2]+'</p></div></div>'+(g[3]?g[3].map(([label,route])=>'<button class="settings-row" data-route="'+route+'"><span><strong>'+label+'</strong><small>Open the '+label.toLowerCase()+' workspace</small></span><b>›</b></button>').join(''):'<div class="settings-row settings-row-note"><span><strong>Appearance · Notifications</strong><small>These experience settings are not connected in this preview. No notification delivery is active.</small></span><span class="settings-note-badge">LOCAL PREVIEW</span></div>')+'</section>').join('')+'</div><div class="callout compact"><h3>Authority stays separate.</h3><p>Authentication, subscription, relationship and preference settings never become consequential authorization by themselves.</p></div></section>';
   }
 
   let menuReturnFocus=null;
